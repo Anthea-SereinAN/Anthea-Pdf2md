@@ -7,365 +7,116 @@
   <style>
     :root {
       --bg-page: #FAFBFC;
-      --bg-gradient: linear-gradient(180deg, #FAFBFC 0%, #F0F3FA 100%);
-      --bg-card: rgba(255,255,255,0.6);
-      --bg-card-hover: rgba(255,255,255,0.8);
-      --border: #E2E6ED;
+      --bg-card: rgba(255,255,255,0.3);
+      --bg-card-hover: rgba(255,255,255,0.5);
+      --border-color: #E2E6ED;
+      --grid-line: rgba(0,0,0,0.05);
       --text-primary: #1A1D26;
       --text-secondary: #6A7180;
-      --text-muted: #969EAD;
-      --accent: #4A90D9;
-      --accent-2: #7C5CE7;
+      --text-tertiary: #969EAD;
       --accent-gradient: linear-gradient(135deg, #4A90D9, #7C5CE7);
+      --accent-gradient-hover: linear-gradient(135deg, #3A7BC8, #6A4BD6);
+      --accent-blue: #4A90D9;
+      --accent-purple: #7C5CE7;
+      --color-success: #10B981;
+      --color-warning: #F59E0B;
+      --color-ai-light: #F3EEFF;
       --font-sans: 'PingFang SC', 'Microsoft YaHei', 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', 'Consolas', monospace;
+      --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px;
+      --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-button: 0 2px 8px rgba(74,144,217,0.25);
     }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: var(--font-sans);
-      background: var(--bg-gradient);
-      color: var(--text-primary);
-      line-height: 1.7;
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem;
-    }
-
-    /* ===== Hero ===== */
-    .hero {
-      text-align: center;
-      padding: 3rem 0 2.5rem;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 0.35rem 1rem;
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      margin-bottom: 1.2rem;
-      backdrop-filter: blur(8px);
-    }
-
-    .hero-title {
-      font-size: 2.4rem;
-      font-weight: 800;
-      background: var(--accent-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 0.4rem;
-    }
-
-    .hero-subtitle {
-      font-size: 1.1rem;
-      color: var(--text-secondary);
-      font-weight: 500;
-      margin-bottom: 1rem;
-    }
-
-    .hero-desc {
-      font-size: 1rem;
-      color: var(--text-secondary);
-      max-width: 600px;
-      margin: 0 auto 1.8rem;
-      line-height: 1.75;
-    }
-
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: var(--accent-gradient);
-      color: #fff;
-      padding: 0.85rem 2.2rem;
-      border-radius: 12px;
-      font-size: 1.05rem;
-      font-weight: 600;
-      text-decoration: none;
-      box-shadow: 0 4px 16px rgba(74,144,217,0.3);
-      transition: all 0.25s ease;
-      border: none;
-      cursor: pointer;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 24px rgba(74,144,217,0.4);
-    }
-
-    /* ===== Section ===== */
-    .section {
-      padding: 2rem 0;
-    }
-
-    .section-title {
-      font-size: 1.4rem;
-      font-weight: 700;
-      margin-bottom: 1.2rem;
-      color: var(--text-primary);
-    }
-
-    /* ===== Feature Grid ===== */
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1rem;
-    }
-
-    .feature-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 1.4rem;
-      backdrop-filter: blur(8px);
-      transition: all 0.25s ease;
-    }
-
-    .feature-card:hover {
-      background: var(--bg-card-hover);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-    }
-
-    .feature-icon {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .feature-name {
-      font-size: 1.05rem;
-      font-weight: 600;
-      margin-bottom: 0.4rem;
-    }
-
-    .feature-desc {
-      font-size: 0.88rem;
-      color: var(--text-secondary);
-      line-height: 1.6;
-    }
-
-    /* ===== Architecture ===== */
-    .arch-flow {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      padding: 1.5rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      backdrop-filter: blur(8px);
-    }
-
-    .arch-step {
-      text-align: center;
-      padding: 0.6rem 1rem;
-      border-radius: 10px;
-      font-size: 0.85rem;
-      font-weight: 500;
-    }
-
-    .arch-step.input { background: rgba(74,144,217,0.1); color: var(--accent); }
-    .arch-step.detect { background: rgba(124,92,231,0.1); color: var(--accent-2); }
-    .arch-step.extract { background: rgba(16,185,129,0.1); color: #10B981; }
-    .arch-step.output { background: rgba(245,158,11,0.1); color: #F59E0B; }
-
-    .arch-arrow {
-      color: var(--text-muted);
-      font-size: 1.2rem;
-    }
-
-    /* ===== Tech Stack ===== */
-    .tech-stack {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .tech-tag {
-      display: inline-block;
-      padding: 0.3rem 0.9rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      font-size: 0.82rem;
-      color: var(--text-secondary);
-      font-weight: 500;
-    }
-
-    /* ===== Footer CTA ===== */
-    .footer-cta {
-      text-align: center;
-      padding: 2.5rem 0;
-      margin-top: 1.5rem;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      backdrop-filter: blur(8px);
-    }
-
-    .footer-cta-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-    }
-
-    .footer-cta-desc {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      margin-bottom: 1.5rem;
-    }
-
-    .footer-meta {
-      margin-top: 2rem;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      opacity: 0.7;
-      text-align: center;
-    }
-
-    /* ===== Responsive ===== */
-    @media (max-width: 768px) {
-      .container { padding: 1.5rem 1rem; }
-      .hero { padding: 2rem 0 1.5rem; }
-      .hero-title { font-size: 1.7rem; }
-      .hero-subtitle { font-size: 1rem; }
-      .hero-desc { font-size: 0.9rem; }
-      .btn-primary { font-size: 1rem; padding: 0.75rem 2rem; }
-      .section { padding: 1.5rem 0; }
-      .section-title { font-size: 1.2rem; }
-      .feature-grid { grid-template-columns: 1fr; gap: 0.8rem; }
-      .feature-card { padding: 1.2rem; }
-      .feature-icon { font-size: 1.7rem; }
-      .feature-name { font-size: 1rem; }
-      .feature-desc { font-size: 0.82rem; }
-      .arch-flow { flex-direction: column; gap: 0.4rem; padding: 1.2rem; }
-      .arch-arrow { transform: rotate(90deg); }
-      .arch-step { width: 100%; font-size: 0.8rem; }
-      .tech-tag { font-size: 0.75rem; padding: 0.25rem 0.7rem; }
-      .footer-cta { padding: 1.5rem; }
-      .footer-cta-title { font-size: 1.2rem; }
-      .footer-cta-desc { font-size: 0.82rem; }
-    }
-
-    @media (max-width: 480px) {
-      .hero-title { font-size: 1.45rem; }
-      .hero-badge { font-size: 0.72rem; }
-    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:var(--font-sans);font-size:15px;line-height:1.6;color:var(--text-primary);background:var(--bg-page);min-height:100vh;position:relative;-webkit-font-smoothing:antialiased}
+    body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px);background-size:40px 40px}
+    body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 700px 500px at 20% 25%,rgba(74,144,217,0.05),transparent),radial-gradient(ellipse 600px 450px at 80% 55%,rgba(124,92,231,0.05),transparent),radial-gradient(ellipse 500px 400px at 50% 85%,rgba(74,144,217,0.04),transparent);opacity:0.8}
+    .container{max-width:800px;margin:0 auto;padding:2rem 1.5rem;position:relative;z-index:1}
+    .topbar{position:sticky;top:0;z-index:100;height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;background:var(--bg-card);backdrop-filter:blur(10px);border-bottom:1px solid var(--border-color);border-top:3px solid var(--accent-blue)}
+    .topbar .logo{display:flex;align-items:center;gap:8px}
+    .topbar .logo-text{font-family:var(--font-mono);font-size:16px;font-weight:600;color:var(--text-primary)}
+    .topbar .demo-badge{font-family:var(--font-mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--accent-purple);background:var(--color-ai-light);padding:3px 10px;border-radius:20px;border:1px solid rgba(124,92,231,0.25)}
+    .hero{text-align:center;padding:3rem 0 2.5rem}
+    .hero-badge{display:inline-flex;align-items:center;gap:0.4rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-sm);padding:0.35rem 1rem;font-size:0.8rem;color:var(--text-secondary);margin-bottom:1.2rem;backdrop-filter:blur(10px)}
+    .hero-title{font-size:2.4rem;font-weight:800;background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.4rem;letter-spacing:-0.5px}
+    .hero-subtitle{font-family:var(--font-mono);font-size:1rem;color:var(--text-secondary);font-weight:500;margin-bottom:1rem;letter-spacing:1px}
+    .hero-desc{font-size:1rem;color:var(--text-secondary);max-width:600px;margin:0 auto 1.8rem;line-height:1.75}
+    .btn-primary{display:inline-flex;align-items:center;gap:0.5rem;background:var(--accent-gradient);color:#fff;padding:0.85rem 2.2rem;border-radius:var(--radius-md);font-size:1.05rem;font-weight:600;text-decoration:none;box-shadow:var(--shadow-button);transition:all 0.2s ease;border:none;cursor:pointer}
+    .btn-primary:hover{background:var(--accent-gradient-hover);transform:translateY(-1px)}
+    .section{padding:2rem 0}
+    .section-title{font-family:var(--font-mono);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:1.2rem;padding-bottom:6px;border-bottom:1px solid var(--border-color)}
+    .section-heading{font-size:1.3rem;font-weight:700;margin-bottom:1.2rem;color:var(--text-primary)}
+    .feature-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
+    .feature-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-md);padding:1.4rem;backdrop-filter:blur(10px);transition:all 0.2s ease;box-shadow:var(--shadow-card)}
+    .feature-card:hover{background:var(--bg-card-hover);transform:translateY(-1px)}
+    .feature-icon{font-size:1.8rem;margin-bottom:0.5rem}
+    .feature-name{font-size:1.05rem;font-weight:600;margin-bottom:0.4rem;color:var(--text-primary)}
+    .feature-desc{font-size:0.88rem;color:var(--text-secondary);line-height:1.6}
+    .arch-flow{display:flex;align-items:center;justify-content:center;gap:0.5rem;flex-wrap:wrap;padding:1.5rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-md);backdrop-filter:blur(10px);box-shadow:var(--shadow-card)}
+    .arch-step{text-align:center;padding:0.6rem 1rem;border-radius:var(--radius-sm);font-size:0.85rem;font-weight:500;font-family:var(--font-mono)}
+    .arch-step.input{background:rgba(74,144,217,0.1);color:var(--accent-blue)}
+    .arch-step.detect{background:rgba(124,92,231,0.1);color:var(--accent-purple)}
+    .arch-step.extract{background:rgba(16,185,129,0.1);color:var(--color-success)}
+    .arch-step.output{background:rgba(245,158,11,0.1);color:var(--color-warning)}
+    .arch-arrow{color:var(--text-tertiary);font-size:1.2rem;font-family:var(--font-mono)}
+    .tech-stack{display:flex;flex-wrap:wrap;gap:0.5rem}
+    .tech-tag{display:inline-block;padding:0.3rem 0.9rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-sm);font-size:0.82rem;color:var(--text-secondary);font-weight:500;font-family:var(--font-mono);backdrop-filter:blur(10px)}
+    .footer-cta{text-align:center;padding:2.5rem 0;margin-top:1.5rem;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-lg);backdrop-filter:blur(10px);box-shadow:var(--shadow-card)}
+    .footer-cta-title{font-size:1.5rem;font-weight:700;margin-bottom:0.5rem;color:var(--text-primary)}
+    .footer-cta-desc{font-size:0.9rem;color:var(--text-tertiary);margin-bottom:1.5rem}
+    .footer-meta{margin-top:2rem;font-size:0.75rem;color:var(--text-tertiary);opacity:0.7;text-align:center;font-family:var(--font-mono)}
+    @media(max-width:768px){.container{padding:1.5rem 1rem}.topbar{padding:0 1rem}.hero{padding:2rem 0 1.5rem}.hero-title{font-size:1.7rem}.hero-subtitle{font-size:0.9rem}.hero-desc{font-size:0.9rem}.btn-primary{font-size:1rem;padding:0.75rem 2rem}.section{padding:1.5rem 0}.section-heading{font-size:1.15rem}.feature-grid{grid-template-columns:1fr;gap:0.8rem}.feature-card{padding:1.2rem}.feature-icon{font-size:1.5rem}.feature-name{font-size:1rem}.feature-desc{font-size:0.82rem}.arch-flow{flex-direction:column;gap:0.4rem;padding:1.2rem}.arch-arrow{transform:rotate(90deg)}.arch-step{width:100%;font-size:0.8rem}.tech-tag{font-size:0.75rem;padding:0.25rem 0.7rem}.footer-cta{padding:1.5rem}.footer-cta-title{font-size:1.2rem}.footer-cta-desc{font-size:0.82rem}}
+    @media(max-width:480px){.hero-title{font-size:1.45rem}.hero-badge{font-size:0.72rem}}
   </style>
 </head>
 <body>
+  <nav class="topbar">
+    <div class="logo"><span class="logo-text">📄 MD转换器</span></div>
+    <span class="demo-badge">PROJECT</span>
+  </nav>
   <div class="container">
-
-    <!-- ===== Hero ===== -->
     <section class="hero">
-      <div class="hero-badge">
-        <span>📄</span>
-        <span>多格式转换 · 双管线架构 · AI校对</span>
-      </div>
+      <div class="hero-badge"><span>📄</span><span>多格式转换 · 双管线架构 · AI校对</span></div>
       <h1 class="hero-title">MD转换器</h1>
       <p class="hero-subtitle">PDF / Word / PPT → Markdown</p>
-      <p class="hero-desc">
-        将多种格式的文档高效转换为 Markdown，适配 AI 更擅长读取 Markdown 的场景。
-        采用双管线架构自动区分文字型与扫描版 PDF，支持 OCR 识别与 AI 校对，
-        提供可视化 Web 界面，可打包分发独立使用。
-      </p>
-      <a href="./app/" class="btn-primary">
-        🚀 立即体验
-      </a>
+      <p class="hero-desc">将多种格式的文档高效转换为 Markdown，适配 AI 更擅长读取 Markdown 的场景。采用双管线架构自动区分文字型与扫描版 PDF，支持 OCR 识别与 AI 校对，提供可视化 Web 界面，可打包分发独立使用。</p>
+      <a href="./app/" class="btn-primary">🚀 立即体验</a>
     </section>
-
-    <!-- ===== Core Features ===== -->
     <section class="section">
-      <h2 class="section-title">✦ 核心功能</h2>
+      <div class="section-title">CORE FEATURES</div>
+      <h2 class="section-heading">核心功能</h2>
       <div class="feature-grid">
-        <div class="feature-card">
-          <div class="feature-icon">🔀</div>
-          <div class="feature-name">双管线架构</div>
-          <div class="feature-desc">自动检测 PDF 类型：文字型直接提取文本，扫描版走 OCR 识别，无需手动切换</div>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">⚡</div>
-          <div class="feature-name">多进程并行</div>
-          <div class="feature-desc">利用多核 CPU 并行处理页面，大幅缩短长文档转换时间</div>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🤖</div>
-          <div class="feature-name">AI 校对</div>
-          <div class="feature-desc">转换后可调用 AI 对结果进行校对和格式优化，提升 Markdown 输出质量</div>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🌐</div>
-          <div class="feature-name">Web 可视化界面</div>
-          <div class="feature-desc">Flask 驱动的 Web 界面，上传→转换→预览→下载全流程可视化操作</div>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">📦</div>
-          <div class="feature-name">打包分发</div>
-          <div class="feature-desc">使用 PyInstaller 打包为独立可执行文件，无需 Python 环境即可运行</div>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">📄</div>
-          <div class="feature-name">多格式支持</div>
-          <div class="feature-desc">支持 PDF、Word (.docx)、PPT (.pptx) 等常见文档格式，统一输出标准 Markdown</div>
-        </div>
+        <div class="feature-card"><div class="feature-icon">🔀</div><div class="feature-name">双管线架构</div><div class="feature-desc">自动检测 PDF 类型：文字型直接提取文本，扫描版走 OCR 识别，无需手动切换</div></div>
+        <div class="feature-card"><div class="feature-icon">⚡</div><div class="feature-name">多进程并行</div><div class="feature-desc">利用多核 CPU 并行处理页面，大幅缩短长文档转换时间</div></div>
+        <div class="feature-card"><div class="feature-icon">🤖</div><div class="feature-name">AI 校对</div><div class="feature-desc">转换后可调用 AI 对结果进行校对和格式优化，提升 Markdown 输出质量</div></div>
+        <div class="feature-card"><div class="feature-icon">🌐</div><div class="feature-name">Web 可视化界面</div><div class="feature-desc">Flask 驱动的 Web 界面，上传→转换→预览→下载全流程可视化操作</div></div>
+        <div class="feature-card"><div class="feature-icon">📦</div><div class="feature-name">打包分发</div><div class="feature-desc">使用 PyInstaller 打包为独立可执行文件，无需 Python 环境即可运行</div></div>
+        <div class="feature-card"><div class="feature-icon">📄</div><div class="feature-name">多格式支持</div><div class="feature-desc">支持 PDF、Word (.docx)、PPT (.pptx) 等常见文档格式，统一输出标准 Markdown</div></div>
       </div>
     </section>
-
-    <!-- ===== Architecture ===== -->
     <section class="section">
-      <h2 class="section-title">✦ 转换流程</h2>
+      <div class="section-title">PIPELINE</div>
+      <h2 class="section-heading">转换流程</h2>
       <div class="arch-flow">
-        <div class="arch-step input">📄 文档输入</div>
-        <div class="arch-arrow">→</div>
-        <div class="arch-step detect">🔍 类型检测</div>
-        <div class="arch-arrow">→</div>
-        <div class="arch-step extract">⚙️ 文本提取 / OCR</div>
-        <div class="arch-arrow">→</div>
+        <div class="arch-step input">📄 文档输入</div><div class="arch-arrow">→</div>
+        <div class="arch-step detect">🔍 类型检测</div><div class="arch-arrow">→</div>
+        <div class="arch-step extract">⚙️ 文本提取 / OCR</div><div class="arch-arrow">→</div>
         <div class="arch-step output">📝 Markdown 输出</div>
       </div>
     </section>
-
-    <!-- ===== Tech Stack ===== -->
     <section class="section">
-      <h2 class="section-title">✦ 技术栈</h2>
+      <div class="section-title">TECH STACK</div>
+      <h2 class="section-heading">技术栈</h2>
       <div class="tech-stack">
-        <span class="tech-tag">Python</span>
-        <span class="tech-tag">Flask</span>
-        <span class="tech-tag">PyMuPDF</span>
-        <span class="tech-tag">RapidOCR</span>
-        <span class="tech-tag">python-docx</span>
-        <span class="tech-tag">python-pptx</span>
-        <span class="tech-tag">PyInstaller</span>
-        <span class="tech-tag">Multiprocessing</span>
+        <span class="tech-tag">Python</span><span class="tech-tag">Flask</span><span class="tech-tag">PyMuPDF</span><span class="tech-tag">RapidOCR</span><span class="tech-tag">python-docx</span><span class="tech-tag">python-pptx</span><span class="tech-tag">PyInstaller</span><span class="tech-tag">Multiprocessing</span>
       </div>
     </section>
-
-    <!-- ===== Footer CTA ===== -->
     <div class="footer-cta">
       <div class="footer-cta-title">体验转换演示</div>
       <div class="footer-cta-desc">在线演示版展示转换流程与效果，完整版支持 AI 校对</div>
-      <a href="./app/" class="btn-primary">
-        🚀 立即体验
-      </a>
+      <a href="./app/" class="btn-primary">🚀 立即体验</a>
     </div>
-
-    <div class="footer-meta">
-      Made by Anthea · 演示版展示转换流程，完整版支持 AI 校对
-    </div>
-
+    <div class="footer-meta">Made by Anthea · v4.0.0-beta</div>
   </div>
 </body>
 </html>
