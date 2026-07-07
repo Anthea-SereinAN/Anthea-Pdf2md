@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MD转换器 v4.0.0-beta — 项目介绍</title>
+<meta name="description" content="MD转换器 — PDF转Markdown双管线架构工具，Python + Flask + PyMuPDF + RapidOCR">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d1117;color:#c9d1d9;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;line-height:1.6}
+.container{max-width:900px;margin:0 auto;padding:2rem}
+.hero{text-align:center;padding:3rem 0 2rem;border-bottom:1px solid rgba(177,76,217,0.2)}
+.hero h1{font-size:2.4rem;color:#e9e0ff;margin-bottom:0.3rem}
+.hero .version{font-size:1.1rem;color:#8b949e;margin-bottom:1rem}
+.hero .tagline{font-size:1.2rem;color:#aeb7c1}
+.badge{display:inline-block;padding:0.25rem 0.75rem;border-radius:9999px;font-size:0.85rem;margin:0.3rem}
+.badge-tech{background:rgba(110,64,201,0.2);color:#e9e0ff;border:1px solid rgba(110,64,201,0.4)}
+.badge-arch{background:rgba(56,139,253,0.15);color:#79c0ff;border:1px solid rgba(56,139,253,0.3)}
+.badge-local{background:rgba(46,160,67,0.15);color:#7ee787;border:1px solid rgba(46,160,67,0.3)}
+.section{padding:2rem 0}
+.section-title{font-size:1.5rem;color:#e9e0ff;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}
+.section-title::before{content:'◆';color:#6e40c9}
+.screenshots{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0}
+.screenshots img{width:100%;border-radius:12px;border:1px solid #3c444d;transition:transform 0.2s}
+.screenshots img:hover{transform:scale(1.02)}
+.arch-box{background:rgba(15,19,26,0.55);border:1px solid #3c444d;border-radius:12px;padding:1.5rem;margin:1rem 0}
+.arch-flow{display:flex;align-items:center;justify-content:center;gap:0.5rem;flex-wrap:wrap;padding:1rem 0}
+.arch-node{background:#1c2128;border:1px solid #3c444d;border-radius:8px;padding:0.5rem 1rem;text-align:center;font-size:0.9rem}
+.arch-node.highlight{border-color:#6e40c9;color:#e9e0ff;background:rgba(110,64,201,0.1)}
+.arch-arrow{color:#8b949e;font-size:1.2rem}
+.features{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1rem 0}
+.feature-card{background:rgba(15,19,26,0.55);border:1px solid #3c444d;border-radius:12px;padding:1.2rem}
+.feature-card h3{color:#e9e0ff;font-size:1rem;margin-bottom:0.5rem}
+.feature-card p{color:#aeb7c1;font-size:0.9rem}
+.feature-icon{font-size:1.4rem;margin-right:0.3rem}
+.tech-stack{display:flex;gap:0.5rem;flex-wrap:wrap;margin:1rem 0}
+.tech-tag{background:#1c2128;border:1px solid #3c444d;border-radius:8px;padding:0.4rem 0.8rem;font-size:0.85rem;color:#aeb7c1}
+.tech-tag.core{border-color:#6e40c9;color:#e9e0ff}
+.note-box{background:rgba(110,64,201,0.08);border:1px solid rgba(110,64,201,0.3);border-radius:12px;padding:1.5rem;margin:1.5rem 0;text-align:center}
+.note-box h3{color:#e9e0ff;margin-bottom:0.5rem}
+.note-box p{color:#aeb7c1;font-size:0.95rem}
+.back-link{display:inline-flex;align-items:center;gap:0.5rem;color:#6e40c9;text-decoration:none;font-size:0.95rem;margin-top:1.5rem;padding:0.5rem 1rem;border:1px solid rgba(110,64,201,0.3);border-radius:8px;transition:all 0.2s}
+.back-link:hover{background:rgba(110,64,201,0.1);border-color:#6e40c9}
+@media(max-width:600px){.screenshots,.features{grid-template-columns:1fr}.hero h1{font-size:1.8rem}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="hero">
+    <h1>MD转换器</h1>
+    <div class="version">v4.0.0-beta</div>
+    <div class="tagline">PDF 转 Markdown 双管线架构工具 · 适配 AI 场景</div>
+    <div style="margin-top:1rem">
+      <span class="badge badge-tech">Python</span>
+      <span class="badge badge-tech">Flask</span>
+      <span class="badge badge-arch">双管线架构</span>
+      <span class="badge badge-arch">OCR</span>
+      <span class="badge badge-local">本地工具</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">项目截图</div>
+    <div class="screenshots">
+      <img src="screenshot.png" alt="MD转换器界面截图">
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">双管线架构</div>
+    <div class="arch-box">
+      <div class="arch-flow">
+        <div class="arch-node">PDF 输入</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node highlight">类型检测器</div>
+        <div class="arch-arrow">⇢</div>
+        <div class="arch-node highlight">文字型管线</div>
+        <div class="arch-arrow">|</div>
+        <div class="arch-node highlight">扫描版管线</div>
+        <div class="arch-arrow">↓</div>
+        <div class="arch-node">后处理共用</div>
+        <div class="arch-arrow">→</div>
+        <div class="arch-node highlight">Markdown 输出</div>
+      </div>
+      <div style="margin-top:1rem;color:#aeb7c1;font-size:0.9rem">
+        <p><strong style="color:#e9e0ff">文字型管线</strong>：PyMuPDF → pymupdf4llm 单次提取 → CJK 空格归一化 → 标题验证 → 页眉清理</p>
+        <p><strong style="color:#e9e0ff">扫描版管线</strong>：逐页渲染 PNG → RapidOCR 识别 → 段落重建(IQR+连续性) → 表格几何检测 → 图片提取</p>
+        <p><strong style="color:#e9e0ff">后处理</strong>：模糊页眉匹配 + 全局内联替换 + 页码模式 + 跨页假标题检测</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">核心功能</div>
+    <div class="features">
+      <div class="feature-card">
+        <h3><span class="feature-icon">🔍</span>智能类型检测</h3>
+        <p>自动判断 PDF 类型（文字型/扫描版），无需手动选择，双管线无缝切换</p>
+      </div>
+      <div class="feature-card">
+        <h3><span class="feature-icon">⚡</span>多进程并行</h3>
+        <p>扫描版 PDF 支持分段并行处理，大文件转换速度显著提升</p>
+      </div>
+      <div class="feature-card">
+        <h3><span class="feature-icon">✨</span>AI 校对</h3>
+        <p>支持接入 AI 模型对转换结果进行校对，修正 OCR 错误和格式偏差</p>
+      </div>
+      <div class="feature-card">
+        <h3><span class="feature-icon">🖥️</span>Web 可视化界面</h3>
+        <p>Flask 提供本地 Web 界面，支持拖拽上传、实时进度、批量转换</p>
+      </div>
+      <div class="feature-card">
+        <h3><span class="feature-icon">📊</span>表格保留</h3>
+        <p>智能检测 PDF 中的表格结构，转换后保留 Markdown 表格格式</p>
+      </div>
+      <div class="feature-card">
+        <h3><span class="feature-icon">📦</span>PyInstaller 打包</h3>
+        <p>一键打包为独立 EXE，无需安装 Python 环境，可直接分发使用</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">技术栈</div>
+    <div class="tech-stack">
+      <span class="tech-tag core">Python</span>
+      <span class="tech-tag core">Flask</span>
+      <span class="tech-tag core">PyMuPDF</span>
+      <span class="tech-tag core">RapidOCR</span>
+      <span class="tech-tag">pymupdf4llm</span>
+      <span class="tech-tag">PyInstaller</span>
+    </div>
+  </div>
+
+  <div class="note-box">
+    <h3>💡 关于在线演示</h3>
+    <p>MD转换器是 <strong>Python 本地工具</strong>，需要后端运行环境，无法提供在线演示。<br>
+    但您可以从截图和架构介绍中了解项目的完整设计与技术细节。<br>
+    源码和详细文档可在 GitHub 仓库查看。</p>
+  </div>
+
+  <a href="https://anthea-sereinan.github.io/Anthea-Tech/" class="back-link">← 返回个人网站</a>
+</div>
+</body>
+</html>
