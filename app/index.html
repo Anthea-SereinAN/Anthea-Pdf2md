@@ -1,0 +1,1891 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MD转换器 — 演示</title>
+
+    <!-- highlight.js 主题 CSS（CDN） -->
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github.min.css"
+          id="hljs-theme">
+
+    <style>
+        /* =============================================================
+           设计系统：融合风格（Grid-Tech + Swiss + Gradient + Aurora Glass）
+           与正式版 index.html 保持视觉一致
+           ============================================================= */
+
+        /* --- CSS 变量：浅色模式 --- */
+        :root {
+            --bg-page: #FAFBFC;
+            --bg-page-gradient: linear-gradient(180deg, #FAFBFC 0%, #F0F3FA 100%);
+            --bg-card: rgba(255,255,255,0.3);
+            --bg-card-hover: rgba(255,255,255,0.5);
+            --border-color: #E2E6ED;
+            --grid-line: rgba(0,0,0,0.05);
+            --text-primary: #1A1D26;
+            --text-secondary: #6A7180;
+            --text-tertiary: #969EAD;
+            --accent-gradient: linear-gradient(135deg, #4A90D9, #7C5CE7);
+            --accent-gradient-hover: linear-gradient(135deg, #3A7BC8, #6A4BD6);
+            --accent-blue: #4A90D9;
+            --accent-purple: #7C5CE7;
+            --accent-light: #EBF3FC;
+            --color-success: #10B981;
+            --color-warning: #F59E0B;
+            --color-danger: #EF4444;
+            --color-ai: #7C3AED;
+            --color-ai-light: #F3EEFF;
+            --code-bg: #F4F6F9;
+            --font-sans: 'PingFang SC', 'Microsoft YaHei', 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', 'SF Mono', 'Consolas', 'Microsoft YaHei', monospace;
+            --spacing-xs: 4px; --spacing-sm: 8px; --spacing-md: 16px;
+            --spacing-lg: 24px; --spacing-xl: 32px;
+            --radius-sm: 4px; --radius-md: 8px; --radius-lg: 12px;
+            --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-button: 0 2px 8px rgba(74,144,217,0.25);
+            --shadow-modal: 0 8px 32px rgba(0,0,0,0.18);
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.25s ease;
+        }
+
+        /* --- CSS 变量：深色模式 --- */
+        [data-theme="dark"] { color-scheme: dark; }
+        [data-theme="dark"] body {
+            --bg-page: #0F1117;
+            --bg-page-gradient: linear-gradient(180deg, #0F1117 0%, #151823 100%);
+            --bg-card: rgba(26,29,40,0.35);
+            --bg-card-hover: rgba(26,29,40,0.55);
+            --border-color: #2A2D3A;
+            --grid-line: rgba(255,255,255,0.03);
+            --text-primary: #E8ECF1;
+            --text-secondary: #8A90A0;
+            --text-tertiary: #5A6070;
+            --accent-blue: #5B9CF5;
+            --accent-purple: #9B7CF7;
+            --accent-light: rgba(91,156,245,0.12);
+            --color-success: #34D399;
+            --color-warning: #FBBF24;
+            --color-danger: #F87171;
+            --color-ai: #A78BFA;
+            --color-ai-light: rgba(167,139,250,0.12);
+            --code-bg: #151822;
+            --shadow-card: 0 1px 3px rgba(0,0,0,0.2);
+            --shadow-button: 0 2px 8px rgba(91,156,245,0.2);
+            --shadow-modal: 0 8px 32px rgba(0,0,0,0.5);
+        }
+
+        /* --- 基础排版 --- */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { font-size: 15px; }
+        body {
+            font-family: var(--font-sans); font-size: 14px; line-height: 1.6;
+            color: var(--text-primary); background: var(--bg-page);
+            min-height: 100vh; position: relative;
+        }
+
+        /* --- 网格背景 --- */
+        body::before {
+            content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+            background-image:
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* --- 极光光晕 --- */
+        body::after {
+            content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background:
+                radial-gradient(ellipse 700px 500px at 20% 25%, rgba(74,144,217,0.04), transparent),
+                radial-gradient(ellipse 600px 450px at 80% 55%, rgba(124,92,231,0.04), transparent),
+                radial-gradient(ellipse 500px 400px at 50% 85%, rgba(74,144,217,0.03), transparent);
+            opacity: 0.7;
+        }
+        [data-theme="dark"] body::after {
+            background:
+                radial-gradient(ellipse 700px 500px at 20% 25%, rgba(91,156,245,0.08), transparent),
+                radial-gradient(ellipse 600px 450px at 80% 55%, rgba(155,124,247,0.08), transparent),
+                radial-gradient(ellipse 500px 400px at 50% 85%, rgba(91,156,245,0.06), transparent);
+            opacity: 1;
+        }
+
+        /* --- 通用组件 --- */
+        .card {
+            background: var(--bg-card); backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color); border-radius: var(--radius-md);
+            box-shadow: var(--shadow-card); position: relative; z-index: 1;
+        }
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            padding: 8px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-color);
+            background: var(--bg-card); color: var(--text-primary);
+            font-size: 13px; font-weight: 500; cursor: pointer;
+            transition: all var(--transition-fast); white-space: nowrap;
+        }
+        .btn:hover { background: var(--bg-card-hover); }
+        .btn:active { transform: scale(0.97); }
+        .btn:disabled { opacity: 0.4; pointer-events: none; }
+        .btn-primary {
+            background: var(--accent-gradient); color: #FFF; border: none;
+            box-shadow: var(--shadow-button);
+        }
+        .btn-primary:hover { background: var(--accent-gradient-hover); transform: translateY(-1px); }
+        .btn-danger { color: var(--color-danger); border-color: var(--color-danger); }
+        .btn-danger:hover { background: rgba(239,68,68,0.08); }
+        .btn-text { background: none; border: none; color: var(--text-secondary); }
+        .btn-text:hover { color: var(--text-primary); background: var(--code-bg); }
+        .btn-large { padding: 12px 24px; font-size: 15px; border-radius: var(--radius-md); }
+        .btn-block { width: 100%; }
+        .btn-sm { padding: 4px 10px; font-size: 11px; }
+
+        .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 4px 0; }
+        .toggle-label { font-size: 13px; color: var(--text-secondary); }
+        .toggle-switch {
+            position: relative; width: 40px; height: 22px; flex-shrink: 0;
+            background: var(--border-color); border-radius: 22px; cursor: pointer;
+            transition: background var(--transition-fast);
+        }
+        .toggle-switch::after {
+            content: ''; position: absolute; top: 2px; left: 2px;
+            width: 18px; height: 18px; background: #FFF; border-radius: 50%;
+            transition: transform var(--transition-fast);
+        }
+        .toggle-switch.on { background: var(--accent-gradient); }
+        .toggle-switch.on::after { transform: translateX(18px); }
+
+        /* --- 页面布局 --- */
+        #topbar {
+            position: sticky; top: 0; z-index: 100; height: 52px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 var(--spacing-lg);
+            background: var(--bg-card); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            border-top: 3px solid var(--accent-blue);
+        }
+        #topbar .logo { display: flex; align-items: center; gap: 8px; }
+        #topbar .logo-text { font-family: var(--font-mono); font-size: 16px; font-weight: 600; color: var(--text-primary); }
+        #topbar .topbar-right { display: flex; align-items: center; gap: 8px; }
+        #topbar .demo-badge {
+            font-family: var(--font-mono); font-size: 10px; letter-spacing: 1px;
+            text-transform: uppercase; color: var(--accent-purple);
+            background: var(--color-ai-light); padding: 3px 10px; border-radius: 20px;
+            border: 1px solid rgba(124,92,231,0.25);
+        }
+
+        #main-content {
+            display: flex; flex-wrap: wrap; gap: 16px;
+            max-width: 1200px; margin: 0 auto;
+            padding: var(--spacing-lg) var(--spacing-md);
+            position: relative; z-index: 1;
+        }
+        #main-content.converting { max-width: none; }
+
+        /* --- 上传区 --- */
+        #upload-zone { flex: 1; min-width: 260px; }
+        #upload-zone .section-title, #config-panel .section-title, #progress-panel .section-title {
+            font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px;
+            text-transform: uppercase; color: var(--text-tertiary); margin-bottom: 10px;
+            padding-bottom: 6px; border-bottom: 1px solid var(--border-color);
+        }
+        .demo-notice {
+            display: flex; align-items: flex-start; gap: 8px; padding: 10px 12px;
+            margin-bottom: 12px; border-radius: var(--radius-sm);
+            background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.25);
+            font-size: 12px; color: var(--text-secondary); line-height: 1.5;
+        }
+        [data-theme="dark"] .demo-notice { background: rgba(245,158,11,0.1); }
+        .demo-notice strong { color: var(--color-warning); }
+
+        #file-list { margin-bottom: 8px; }
+        #file-list:empty { display: none; }
+        .file-item {
+            display: flex; align-items: center; gap: 8px; padding: 10px 12px;
+            background: var(--bg-card); border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color); margin-bottom: 6px;
+        }
+        .file-item .file-info { flex: 1; min-width: 0; }
+        .file-item .file-name { font-size: 13px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .file-item .file-meta { font-size: 11px; color: var(--text-secondary); display: flex; gap: 8px; flex-wrap: wrap; }
+        .file-item .file-remove { cursor: pointer; color: var(--text-tertiary); font-size: 18px; line-height: 1; padding: 2px 6px; border-radius: var(--radius-sm); border: none; background: none; }
+        .file-item .file-remove:hover { color: var(--color-danger); background: rgba(239,68,68,0.08); }
+        .fmt-badge {
+            font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.5px;
+            text-transform: uppercase; padding: 1px 6px; border-radius: 3px;
+            font-weight: 500;
+        }
+        .fmt-pdf { background: #EBF3FC; color: #4A90D9; }
+        .fmt-docx { background: #E6F9F0; color: #10B981; }
+        .fmt-pptx { background: rgba(245,158,11,0.1); color: #D97706; }
+        [data-theme="dark"] .fmt-pdf { background: rgba(74,144,217,0.15); }
+        [data-theme="dark"] .fmt-docx { background: rgba(16,185,129,0.15); }
+        [data-theme="dark"] .fmt-pptx { background: rgba(245,158,11,0.15); }
+
+        .demo-actions {
+            display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+            padding-top: 8px; border-top: 1px dashed var(--border-color);
+        }
+        .demo-hint { font-size: 11px; color: var(--text-tertiary); }
+        input[type="text"], input[type="number"], input[type="password"], select {
+            padding: 8px 10px; border: 1px solid var(--border-color); border-radius: var(--radius-sm);
+            font-size: 13px; font-family: var(--font-sans); color: var(--text-primary);
+            background: var(--bg-card); outline: none; transition: border-color var(--transition-fast);
+        }
+        input:focus, select:focus { border-color: var(--accent-blue); }
+        select { cursor: pointer; }
+
+        /* --- 配置区 --- */
+        #config-panel { flex: 1; min-width: 260px; }
+        #config-panel.disabled { opacity: 0.5; pointer-events: none; }
+        #config-panel.ai-active { border-color: var(--color-ai); }
+        .config-group { margin-bottom: 10px; }
+        .config-label { font-size: 12px; font-weight: 500; color: var(--text-secondary); margin-bottom: 4px; display: block; }
+        .page-range-row { display: flex; align-items: center; gap: 8px; }
+        .page-range-row input { width: 70px; text-align: center; }
+        .preset-btns { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+        .btn-preset {
+            padding: 5px 10px; font-size: 11px; border-radius: 20px;
+            border: 1px solid var(--border-color); background: var(--bg-card);
+            color: var(--text-secondary); cursor: pointer; transition: all var(--transition-fast);
+        }
+        .btn-preset:hover { border-color: var(--accent-blue); color: var(--accent-blue); background: var(--accent-light); }
+        .btn-preset.applied { background: var(--accent-gradient); color: #FFF; border-color: transparent; }
+
+        #btn-convert {
+            width: 100%; height: 44px; font-size: 16px; font-weight: 500;
+            letter-spacing: 0.5px; border: none; border-radius: var(--radius-md);
+            background: var(--accent-gradient); color: #FFF; cursor: pointer;
+            box-shadow: var(--shadow-button); transition: all var(--transition-fast);
+            margin-top: 10px;
+        }
+        #btn-convert:hover:not(:disabled) { background: var(--accent-gradient-hover); transform: translateY(-1px); }
+        #btn-convert:active:not(:disabled) { transform: scale(0.98); }
+        #btn-convert:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .ai-banner {
+            display: none; padding: 8px 12px; margin-bottom: 8px;
+            background: var(--color-ai-light); border: 1px solid rgba(124,92,231,0.2);
+            border-radius: var(--radius-sm); font-size: 12px; color: var(--color-ai);
+        }
+        .ai-banner.show { display: block; }
+        .ai-vision-warn {
+            display: none; padding: 6px 10px; margin-top: 4px;
+            background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.25);
+            border-radius: var(--radius-sm); font-size: 11px; color: var(--color-warning);
+        }
+        .ai-vision-warn.show { display: block; }
+
+        /* --- 进度区 --- */
+        #progress-panel { width: 100%; flex: none; display: none; }
+        #progress-panel.show { display: block; }
+        .progress-bar-outer {
+            width: 100%; height: 6px; background: var(--code-bg);
+            border-radius: 3px; overflow: hidden; margin-bottom: 12px;
+        }
+        .progress-bar-inner {
+            height: 100%; background: var(--accent-gradient); border-radius: 3px;
+            transition: width 0.3s ease; width: 0%;
+        }
+        .progress-bar-inner.indeterminate {
+            width: 40% !important; animation: progressIndeterminate 1.5s ease-in-out infinite;
+        }
+        .progress-bar-inner.done { background: var(--color-success); }
+        .progress-bar-inner.error-bg { background: var(--color-danger); }
+        @keyframes progressIndeterminate {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(350%); }
+        }
+        .progress-stats { display: flex; align-items: center; gap: 16px; margin-bottom: 4px; }
+        .progress-percent { font-size: 20px; font-weight: 700; color: var(--accent-blue); }
+        .progress-phase { font-size: 14px; color: var(--text-secondary); }
+        .progress-eta { font-size: 12px; color: var(--text-tertiary); margin-bottom: 8px; }
+
+        /* --- 批量队列 --- */
+        #batch-queue { display: none; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+        #batch-queue.has-items { display: flex; }
+        .batch-item {
+            font-family: var(--font-mono); font-size: 11px; padding: 4px 10px;
+            border-radius: 12px; background: var(--code-bg); color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+        .batch-item.batch-running { background: var(--accent-light); color: var(--accent-blue); font-weight: 600; border-color: var(--accent-blue); }
+        .batch-item.batch-done { background: rgba(16,185,129,0.08); color: var(--color-success); cursor: pointer; border-color: rgba(16,185,129,0.25); }
+
+        /* --- 结果区 --- */
+        #result-panel { display: none; max-width: calc(1200px - 32px); margin: 0 auto var(--spacing-lg); padding: 20px; position: relative; z-index: 1; }
+        #result-panel.show { display: block; }
+        #result-panel::before {
+            content: ''; position: absolute; inset: 0; pointer-events: none; z-index: -1;
+            background:
+                linear-gradient(90deg, var(--text-tertiary) 4px, transparent 4px) 0 0,
+                linear-gradient(90deg, var(--text-tertiary) 4px, transparent 4px) 0 100%,
+                linear-gradient(0deg, var(--text-tertiary) 12px, transparent 12px) 0 0,
+                linear-gradient(0deg, var(--text-tertiary) 12px, transparent 12px) 100% 0;
+            background-size: 16px 16px; background-repeat: no-repeat; opacity: 0.35;
+        }
+        #result-file-tabs { display: none; gap: 2px; margin-bottom: 12px; overflow-x: auto; }
+        #result-file-tabs.has-items { display: flex; }
+        .result-tab {
+            padding: 6px 14px; font-size: 12px; border: 1px solid var(--border-color);
+            border-bottom: none; border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+            background: var(--code-bg); color: var(--text-secondary); cursor: pointer;
+        }
+        .result-tab.active { background: var(--bg-card); color: var(--text-primary); font-weight: 600; border-color: var(--accent-blue) var(--border-color) transparent; }
+        #result-toolbar {
+            display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+            padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid var(--border-color);
+        }
+        #result-toolbar .result-filename { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-right: auto; }
+        #result-file-nav { display: none; align-items: center; gap: 4px; }
+        #result-file-nav.has-items { display: flex; }
+
+        #split-pane { display: flex; height: calc(100vh - 360px); min-height: 400px; }
+        #source-pane { flex: 1; overflow-y: auto; background: var(--code-bg); border-radius: var(--radius-sm); padding: 16px; min-width: 150px; }
+        #source-pane pre { margin: 0; font-family: var(--font-mono); font-size: 13px; line-height: 1.7; color: var(--text-primary); white-space: pre-wrap; word-break: break-all; }
+        #split-divider {
+            width: 8px; flex-shrink: 0; cursor: col-resize; position: relative;
+            display: flex; align-items: center; justify-content: center; margin: 0 4px;
+            border-radius: 4px; transition: background var(--transition-fast);
+        }
+        #split-divider:hover { background: var(--accent-light); }
+        #split-divider::after { content: '⋮'; color: var(--text-tertiary); font-size: 14px; }
+        #preview-pane {
+            flex: 1; overflow-y: auto; background: var(--bg-card);
+            border-radius: var(--radius-sm); padding: 20px; min-width: 150px;
+        }
+        #preview-pane h1, #preview-pane h2, #preview-pane h3 { margin-top: 1.2em; margin-bottom: 0.5em; }
+        #preview-pane h1 { font-size: 1.5em; } #preview-pane h2 { font-size: 1.25em; } #preview-pane h3 { font-size: 1.1em; }
+        #preview-pane p { margin-bottom: 0.8em; line-height: 1.8; }
+        #preview-pane table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+        #preview-pane th, #preview-pane td { border: 1px solid var(--border-color); padding: 8px 12px; text-align: left; font-size: 13px; }
+        #preview-pane th { background: var(--code-bg); font-weight: 600; }
+        #preview-pane tr:nth-child(even) td { background: rgba(0,0,0,0.02); }
+        #preview-pane blockquote { border-left: 3px solid var(--accent-blue); padding: 4px 12px; margin: 12px 0; color: var(--text-secondary); background: var(--code-bg); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+        #preview-pane code { font-family: var(--font-mono); font-size: 0.9em; background: var(--code-bg); padding: 2px 5px; border-radius: 3px; }
+        #preview-pane pre { background: var(--code-bg); padding: 14px; border-radius: var(--radius-sm); overflow-x: auto; }
+        #preview-pane pre code { background: none; padding: 0; }
+
+        #outline-nav {
+            display: none; width: 180px; flex-shrink: 0; overflow-y: auto;
+            border-left: 1px solid var(--border-color); padding-left: 12px; margin-left: 12px;
+        }
+        #outline-nav.open { display: block; }
+        .outline-item { display: block; font-size: 12px; color: var(--text-secondary); padding: 3px 0; cursor: pointer; text-decoration: none; transition: color var(--transition-fast); }
+        .outline-item:hover { color: var(--accent-blue); }
+        .outline-item.level-2 { padding-left: 8px; font-weight: 500; }
+        .outline-item.level-3 { padding-left: 20px; font-size: 11px; }
+
+        /* --- 历史区 --- */
+        #history-panel { max-width: calc(1200px - 32px); margin: 0 auto var(--spacing-lg); padding: 20px; position: relative; z-index: 1; }
+        #history-panel .history-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        #history-panel .section-title { font-family: var(--font-mono); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-tertiary); }
+        #history-empty { text-align: center; color: var(--text-tertiary); padding: 24px; font-size: 13px; display: none; }
+        #history-empty.show { display: block; }
+        .history-item {
+            display: flex; align-items: center; gap: 12px; padding: 10px 12px;
+            border: 1px solid var(--border-color); border-radius: var(--radius-sm);
+            margin-bottom: 6px; background: var(--bg-card); font-size: 13px;
+        }
+        .history-item .hist-name { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
+        .history-item .hist-meta { font-size: 11px; color: var(--text-secondary); white-space: nowrap; }
+        .hist-tag {
+            font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.5px;
+            text-transform: uppercase; padding: 1px 6px; border-radius: 3px; font-weight: 500;
+        }
+        .hist-tag.text-mode { background: #EBF3FC; color: #4A90D9; }
+        .hist-tag.ocr-mode { background: rgba(245,158,11,0.1); color: #D97706; }
+        .hist-tag.ai-mode { background: var(--color-ai-light); color: var(--color-ai); }
+        .hist-tag.status-done { background: rgba(16,185,129,0.1); color: var(--color-success); }
+        .hist-tag.status-error { background: rgba(239,68,68,0.1); color: var(--color-danger); }
+        [data-theme="dark"] .hist-tag.text-mode { background: rgba(74,144,217,0.15); }
+        [data-theme="dark"] .hist-tag.ocr-mode { background: rgba(245,158,11,0.15); }
+
+        /* --- 设置弹窗 --- */
+        #settings-overlay {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+            z-index: 1000; align-items: center; justify-content: center;
+            backdrop-filter: blur(6px);
+        }
+        #settings-overlay.visible { display: flex; }
+        #settings-modal {
+            background: rgba(255,255,255,0.92); border-radius: var(--radius-md);
+            width: 560px; max-width: 90vw; max-height: 85vh; overflow-y: auto;
+            box-shadow: var(--shadow-modal); padding: 0; border: 1px solid var(--border-color);
+        }
+        [data-theme="dark"] #settings-modal { background: rgba(26,29,40,0.95); }
+        #settings-modal .modal-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 20px; border-bottom: 1px solid var(--border-color);
+            font-size: 14px; font-weight: 600; color: var(--text-primary);
+        }
+        #settings-modal .modal-close {
+            background: none; border: none; font-size: 22px; cursor: pointer;
+            color: var(--text-secondary); line-height: 1; padding: 4px; border-radius: var(--radius-sm);
+        }
+        #settings-modal .modal-close:hover { background: var(--code-bg); color: var(--text-primary); }
+        #settings-modal .modal-body { padding: 20px; }
+        #settings-modal .modal-footer { display: flex; gap: 8px; justify-content: flex-end; padding: 12px 20px; border-top: 1px solid var(--border-color); }
+        .settings-section { margin-bottom: var(--spacing-md); }
+        .settings-section h3 { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text-primary); }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 12px; font-weight: 500; margin-bottom: 4px; color: var(--text-secondary); }
+        .form-group input, .form-group select { width: 100%; }
+        .api-key-row { display: flex; gap: 4px; }
+        .api-key-row input { flex: 1; }
+
+        /* --- Toast --- */
+        #toast-container {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            z-index: 2000; display: flex; flex-direction: column; gap: 8px;
+            pointer-events: none;
+        }
+        .toast {
+            min-width: 300px; max-width: 500px; padding: 12px 16px;
+            border-radius: var(--radius-sm); font-size: 13px; pointer-events: auto;
+            display: flex; align-items: center; gap: 8px;
+            box-shadow: var(--shadow-card); border: 1px solid var(--border-color);
+            animation: toastIn 0.3s ease; transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .toast.removing { opacity: 0; transform: translateY(-10px); }
+        .toast-success { background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.3); color: #065F46; }
+        .toast-error { background: rgba(239,68,68,0.08); border-color: rgba(239,68,68,0.3); color: #991B1B; }
+        .toast-info { background: rgba(74,144,217,0.08); border-color: rgba(74,144,217,0.3); color: #1E40AF; }
+        .toast-warning { background: rgba(245,158,11,0.08); border-color: rgba(245,158,11,0.3); color: #92400E; }
+        [data-theme="dark"] .toast-success { color: #34D399; }
+        [data-theme="dark"] .toast-error { color: #F87171; }
+        [data-theme="dark"] .toast-info { color: #5B9CF5; }
+        [data-theme="dark"] .toast-warning { color: #FBBF24; }
+        .toast-close { margin-left: auto; cursor: pointer; color: inherit; opacity: 0.6; background: none; border: none; font-size: 16px; }
+        .toast-close:hover { opacity: 1; }
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- 响应式 --- */
+        /* 桌面端：居中 + 最大宽度 */
+        @media (min-width: 1024px) {
+            #main-content { max-width: 1100px; margin: 0 auto; }
+            #split-pane { flex-direction: row; }
+            #source-pane { flex: 1; }
+            #preview-pane { flex: 1; }
+        }
+
+        /* 平板端：纵向堆叠 */
+        @media (max-width: 1023px) {
+            #main-content { flex-direction: column; max-width: none; padding: 12px var(--spacing-md); }
+            #upload-zone, #config-panel { flex: none; width: 100%; }
+            #progress-panel { width: 100%; }
+            #split-pane { flex-direction: column; height: auto !important; min-height: 500px; }
+            #source-pane { height: 350px; flex: none; }
+            #preview-pane { height: 400px; flex: none; }
+            #split-divider { width: 100%; height: 6px; cursor: row-resize; margin: 0; border-radius: 0; }
+            #split-divider::after { content: '—'; font-size: 10px; letter-spacing: 4px; }
+            #outline-nav {
+                position: fixed; right: 0; top: 52px; width: 260px; max-width: 80vw;
+                height: calc(100vh - 52px); z-index: 200;
+                background: var(--bg-card); backdrop-filter: blur(12px);
+                border-left: 1px solid var(--border-color); box-shadow: -2px 0 16px rgba(0,0,0,0.1);
+                display: none; padding: 12px; overflow-y: auto;
+            }
+            #outline-nav.mobile-visible { display: block; }
+            #result-panel, #history-panel { max-width: none; margin-left: var(--spacing-md); margin-right: var(--spacing-md); }
+            #settings-modal { width: 90vw; max-height: 90vh; }
+            .card { padding: 14px !important; }
+        }
+
+        /* 手机端：紧凑适配 */
+        @media (max-width: 639px) {
+            /* 全局收缩 */
+            body { font-size: 13px; }
+            #main-content { padding: 8px; gap: 8px; }
+            .card { padding: 12px !important; border-radius: 0; }
+
+            /* 顶栏 */
+            #topbar { height: 48px; padding: 0 10px; gap: 4px; }
+            #topbar .logo-text { font-size: 14px; }
+            #topbar .demo-badge { display: none; }
+            #topbar .topbar-right { gap: 2px; }
+            #topbar .btn { padding: 4px 6px; font-size: 11px; }
+            #ai-status { font-size: 10px !important; }
+
+            /* 上传区 */
+            .demo-notice { font-size: 11px; padding: 8px 10px; gap: 6px; }
+            .demo-notice svg { width: 14px; height: 14px; flex-shrink: 0; }
+            .file-item { padding: 8px 10px; gap: 6px; flex-wrap: wrap; }
+            .file-item .file-name { font-size: 12px; max-width: 180px; }
+            .file-item .file-meta { font-size: 10px; gap: 4px; }
+            .file-item .file-remove { font-size: 20px; padding: 2px 8px; }
+            .demo-actions { flex-direction: column; align-items: stretch; gap: 6px; padding-top: 6px; }
+            .demo-actions .btn { width: 100%; justify-content: center; }
+            .demo-hint { text-align: center; font-size: 10px; }
+
+            /* 配置区 */
+            .config-group { margin-bottom: 8px; }
+            .config-label { font-size: 11px; }
+            .toggle-row { flex-wrap: wrap; gap: 4px; }
+            .toggle-label { font-size: 12px; }
+            input[type="text"], input[type="number"], select { font-size: 12px; padding: 7px 8px; }
+            .page-range-row { gap: 4px; }
+            .page-range-row input { width: 56px; }
+            .preset-btns { gap: 4px; }
+            .btn-preset { flex: 1 1 auto; font-size: 10px; padding: 5px 8px; text-align: center; }
+            #btn-convert { height: 46px; font-size: 15px; position: sticky; bottom: 8px; z-index: 50; margin-top: 12px; }
+
+            /* 进度区 */
+            .progress-stats { flex-wrap: wrap; gap: 6px; }
+            .progress-percent { font-size: 18px; }
+            .progress-phase { font-size: 12px; }
+            .progress-eta { font-size: 11px; }
+            #batch-queue { gap: 4px; }
+            .batch-item { font-size: 10px; padding: 3px 8px; }
+
+            /* 结果区 */
+            #result-panel { padding: 10px !important; margin: 0 4px 8px !important; border-radius: var(--radius-sm); }
+            #result-panel::before { display: none; }
+            #result-file-tabs { gap: 0; }
+            .result-tab { font-size: 11px; padding: 5px 10px; }
+            #result-toolbar { gap: 4px; padding-bottom: 8px; margin-bottom: 8px; }
+            #result-toolbar .result-filename { font-size: 13px; width: 100%; order: -2; margin-bottom: 4px; }
+            #result-toolbar .btn { font-size: 11px; padding: 5px 8px; }
+            #result-toolbar .btn-sm { font-size: 10px; }
+            #result-file-nav { order: -1; }
+            #split-pane { min-height: 420px; }
+            #source-pane { height: 250px; padding: 10px; }
+            #source-pane pre { font-size: 11px; line-height: 1.5; }
+            #preview-pane { height: 320px; padding: 14px; font-size: 13px; }
+            #outline-nav { top: 48px; height: calc(100vh - 48px); width: 240px; }
+
+            /* 历史区 */
+            #history-panel { padding: 10px !important; margin: 0 4px 8px !important; border-radius: var(--radius-sm); }
+            .history-item { flex-wrap: wrap; gap: 4px; padding: 8px 10px; font-size: 12px; }
+            .history-item .hist-name { flex: 1 1 100%; max-width: none; }
+            .history-item .hist-meta { font-size: 10px; }
+
+            /* 设置弹窗 */
+            #settings-modal { width: 100vw; max-width: none; max-height: 90vh; border-radius: var(--radius-md) var(--radius-md) 0 0; align-self: flex-end; }
+            #settings-modal .modal-header { padding: 12px 16px; font-size: 13px; }
+            #settings-modal .modal-body { padding: 14px; }
+            #settings-modal .modal-footer { padding: 10px 16px; gap: 6px; }
+            .form-group { margin-bottom: 10px; }
+            .form-group label { font-size: 11px; }
+            .settings-section h3 { font-size: 13px; }
+
+            /* Toast */
+            #toast-container { width: calc(100% - 16px); top: 10px; gap: 4px; }
+            .toast { min-width: 0; padding: 10px 12px; font-size: 12px; }
+        }
+    </style>
+    </style>
+</head>
+<body>
+
+    <!-- ===== SVG 图标精灵表 ===== -->
+    <svg style="display:none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <symbol id="icon-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 2h12l4 4v16a2 2 0 01-2 2H4a2 2 0 01-2-2V4a2 2 0 012-2z"/>
+                <path d="M16 2v4h4"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="7" y1="16" x2="14" y2="16"/><line x1="7" y1="8" x2="10" y2="8"/>
+            </symbol>
+            <symbol id="icon-play" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="6,3 20,12 6,21"/></symbol>
+            <symbol id="icon-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></symbol>
+            <symbol id="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4,12 9,17 20,6"/></symbol>
+            <symbol id="icon-download" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="17"/><polyline points="7,12 12,17 17,12"/><line x1="4" y1="21" x2="20" y2="21"/></symbol>
+            <symbol id="icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="12" height="18" rx="2"/><rect x="4" y="6" width="12" height="18" rx="2"/></symbol>
+            <symbol id="icon-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/></symbol>
+            <symbol id="icon-ai" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/></symbol>
+            <symbol id="icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M20 14.5A8.5 8.5 0 019.5 4c-4.7 0-8.5 3.8-8.5 8.5s3.8 8.5 8.5 8.5c1.4 0 2.7-.3 3.9-.9"/></symbol>
+            <symbol id="icon-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5h6l2 2h10a2 2 0 012 2v9a2 2 0 01-2 2H2V5z"/></symbol>
+            <symbol id="icon-history" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><polyline points="12,6 12,12 16,14"/></symbol>
+            <symbol id="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M2 12s4-8 10-8 10 8 10 8-4 8-10 8-10-8-10-8z"/></symbol>
+            <symbol id="icon-warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 22h20L12 2z"/><line x1="12" y1="10" x2="12" y2="15"/><circle cx="12" cy="19" r="0.5" fill="currentColor" stroke="none"/></symbol>
+            <symbol id="icon-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="10" x2="12" y2="16"/><circle cx="12" cy="7.5" r="0.5" fill="currentColor" stroke="none"/></symbol>
+            <symbol id="icon-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="8,7 3,12 8,17"/><polyline points="16,7 21,12 16,17"/></symbol>
+            <symbol id="icon-heading" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></symbol>
+            <symbol id="icon-box" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><line x1="12" y1="12" x2="12" y2="21"/><line x1="12" y1="12" x2="20" y2="7.5"/><line x1="12" y1="12" x2="4" y2="7.5"/></symbol>
+            <symbol id="icon-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M10 13a5 5 0 007.5 0l2-2a5 5 0 00-7-7l-1.5 1.5"/><path d="M14 11a5 5 0 00-7.5 0l-2 2a5 5 0 007 7l1.5-1.5"/></symbol>
+            <symbol id="icon-memo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="7" y1="16" x2="12" y2="16"/></symbol>
+        </defs>
+    </svg>
+
+    <!-- ===== 顶栏 ===== -->
+    <header id="topbar">
+        <div class="logo">
+            <svg width="20" height="20" style="color:var(--accent-blue)"><use href="#icon-doc"/></svg>
+            <span class="logo-text">MD转换器</span>
+        </div>
+        <div class="topbar-right">
+            <span class="demo-badge">Demo 演示</span>
+            <span id="ai-status" style="font-family:var(--font-mono);font-size:12px;color:var(--text-tertiary);">🤖 AI 未配置</span>
+            <button class="btn btn-text btn-sm" id="btn-settings" title="设置">
+                <svg width="18" height="18"><use href="#icon-settings"/></svg>
+            </button>
+            <button class="btn btn-text btn-sm" id="btn-darkmode" title="切换深色模式">
+                <svg width="18" height="18"><use href="#icon-dark"/></svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- ===== 主内容区 ===== -->
+    <main id="main-content">
+        <!-- 上传区 -->
+        <div id="upload-zone" class="card" style="padding:20px;">
+            <div class="section-title">📤 Demo 文件</div>
+            <div class="demo-notice">
+                <svg width="16" height="16" style="flex-shrink:0;color:var(--color-warning)"><use href="#icon-info"/></svg>
+                <span>以下为<strong>演示用虚拟文件</strong>，仅用于展示界面交互流程，<strong>不执行真实转换</strong></span>
+            </div>
+            <div id="file-list"></div>
+            <div class="demo-actions">
+                <button class="btn btn-sm" id="btn-reset-files" title="恢复默认 Demo 文件">
+                    <svg width="14" height="14"><use href="#icon-history"/></svg> 重置 Demo 文件
+                </button>
+                <span class="demo-hint">点击文件旁的 × 可移除，点击上方按钮恢复</span>
+            </div>
+        </div>
+
+        <!-- 配置区 -->
+        <div id="config-panel" class="card" style="padding:20px;">
+            <div class="section-title">⚙️ 转换选项</div>
+
+            <div class="config-group">
+                <label class="config-label">转换模式</label>
+                <select id="mode-select" style="width:100%">
+                    <option value="auto">自动检测（推荐）</option>
+                    <option value="text">文字型 — 电子文档、论文</option>
+                    <option value="ocr">扫描版 — 扫描书籍、图片版</option>
+                </select>
+            </div>
+
+            <div class="config-group">
+                <div class="toggle-row">
+                    <span class="toggle-label">快速模式（200 DPI）</span>
+                    <div class="toggle-switch" id="toggle-fast" role="switch"></div>
+                </div>
+            </div>
+
+            <div class="config-group">
+                <label class="config-label">页码范围</label>
+                <div class="page-range-row">
+                    <input type="number" id="page-start" placeholder="1" min="1">
+                    <span style="color:var(--text-tertiary)">—</span>
+                    <input type="number" id="page-end" placeholder="全部" min="1">
+                </div>
+            </div>
+
+            <div class="config-group">
+                <div class="toggle-row">
+                    <span class="toggle-label">🔛 并行加速</span>
+                    <div class="toggle-switch" id="toggle-parallel" role="switch"></div>
+                </div>
+            </div>
+
+            <div class="config-group">
+                <div class="toggle-row">
+                    <span class="toggle-label">📑 标题识别</span>
+                    <div class="toggle-switch on" id="toggle-headings" role="switch"></div>
+                </div>
+            </div>
+
+            <div class="config-group">
+                <label class="config-label">输出路径（可选）</label>
+                <input type="text" id="output-path" placeholder="默认：与源文件同目录" style="width:100%">
+            </div>
+
+            <div class="config-group">
+                <div class="toggle-row">
+                    <span class="toggle-label">🤖 AI 辅助校对</span>
+                    <div class="toggle-switch" id="toggle-ai" role="switch"></div>
+                </div>
+                <select id="ai-provider-select" style="width:100%;margin-top:4px;display:none;">
+                    <option value="deepseek">DeepSeek</option>
+                    <option value="qwen">通义千问</option>
+                    <option value="kimi">Kimi</option>
+                </select>
+                <div class="ai-vision-warn" id="ai-vision-warn">⚠️ 当前模型不支持图片输入，AI 校对需要视觉模型</div>
+            </div>
+
+            <div class="ai-banner" id="ai-banner">🤖 AI 辅助已启用 — 转换后将逐页校对 OCR 结果</div>
+
+            <div class="preset-btns">
+                <button class="btn-preset" data-preset="paper">📄 知网论文</button>
+                <button class="btn-preset" data-preset="book">📖 扫描书籍</button>
+                <button class="btn-preset" data-preset="last">🕐 最近使用</button>
+            </div>
+
+            <button id="btn-convert">
+                <svg width="18" height="18" style="color:inherit"><use href="#icon-play"/></svg>
+                🚀 开始转换
+            </button>
+        </div>
+
+        <!-- 进度区 -->
+        <div id="progress-panel" class="card" style="padding:20px;">
+            <div class="section-title">📊 转换进度</div>
+            <div class="progress-bar-outer"><div class="progress-bar-inner" id="progress-bar"></div></div>
+            <div class="progress-stats">
+                <span class="progress-percent" id="progress-percent">0%</span>
+                <span class="progress-phase" id="progress-phase">准备中…</span>
+            </div>
+            <div class="progress-eta" id="progress-eta"></div>
+            <div id="batch-queue"></div>
+            <button class="btn btn-danger btn-sm" id="btn-cancel" style="margin-top:8px;">✕ 取消转换</button>
+        </div>
+    </main>
+
+    <!-- ===== 结果区 ===== -->
+    <section id="result-panel" class="card">
+        <div id="result-file-tabs"></div>
+        <div id="result-toolbar">
+            <span class="result-filename" id="result-filename"></span>
+            <div id="result-file-nav">
+                <button class="btn btn-sm btn-text" id="btn-result-prev">◀</button>
+                <span style="font-size:12px;color:var(--text-secondary);" id="result-file-indicator"></span>
+                <button class="btn btn-sm btn-text" id="btn-result-next">▶</button>
+            </div>
+            <button class="btn btn-sm" id="btn-copy" title="复制源码">
+                <svg width="14" height="14"><use href="#icon-copy"/></svg> 复制源码
+            </button>
+            <button class="btn btn-sm" id="btn-download-md" title="下载 Markdown 文件">
+                <svg width="14" height="14"><use href="#icon-download"/></svg> 下载 .md
+            </button>
+            <button class="btn btn-sm" id="btn-view-toggle" title="切换源码/预览">
+                <svg width="14" height="14"><use href="#icon-code"/></svg> 看源码
+            </button>
+            <button class="btn btn-sm" id="btn-outline-toggle" title="大纲导航">
+                <svg width="14" height="14"><use href="#icon-heading"/></svg> 大纲
+            </button>
+            <button class="btn btn-sm btn-text" id="btn-font-smaller">A⁻</button>
+            <button class="btn btn-sm btn-text" id="btn-font-larger">A⁺</button>
+            <button class="btn btn-sm btn-text" id="btn-close-result" style="color:var(--text-tertiary);">✕</button>
+        </div>
+        <div id="split-pane">
+            <div id="source-pane"><pre><code class="language-markdown"></code></pre></div>
+            <div id="split-divider" title="拖拽调整分栏比例"></div>
+            <div id="preview-pane"></div>
+            <div id="outline-nav"></div>
+        </div>
+    </section>
+
+    <!-- ===== 历史区 ===== -->
+    <section id="history-panel" class="card">
+        <div class="history-header">
+            <span class="section-title">
+                <svg width="14" height="14" style="vertical-align:-2px"><use href="#icon-history"/></svg> 转换历史
+            </span>
+            <button class="btn btn-sm btn-text" id="btn-clear-history" style="display:none;">全部清除</button>
+        </div>
+        <div id="history-empty" class="show">暂无转换记录 — 试试点击上传区开始模拟转换</div>
+        <div id="history-list"></div>
+    </section>
+
+    <!-- ===== 设置弹窗 ===== -->
+    <div id="settings-overlay">
+        <div id="settings-modal">
+            <div class="modal-header">
+                <span>⚙️ 设置</span>
+                <button class="modal-close" id="btn-settings-close">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h3>🤖 AI 配置</h3>
+                    <div class="form-group">
+                        <label>AI 提供商</label>
+                        <select id="settings-ai-provider">
+                            <option value="deepseek">DeepSeek</option>
+                            <option value="doubao">豆包（字节）</option>
+                            <option value="kimi">Kimi（月之暗面）</option>
+                            <option value="qwen">通义千问（阿里）</option>
+                            <option value="glm">智谱 GLM</option>
+                            <option value="hunyuan">混元（腾讯）</option>
+                            <option value="minimax">MiniMax</option>
+                            <option value="openai">OpenAI</option>
+                            <option value="anthropic">Anthropic</option>
+                            <option value="custom">自定义兼容接口</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>API Key</label>
+                        <div class="api-key-row">
+                            <input type="password" id="settings-api-key" placeholder="sk-...">
+                            <button class="btn btn-sm btn-text" id="btn-toggle-key-vis" title="显示/隐藏">👁</button>
+                        </div>
+                    </div>
+                    <div class="form-group" id="group-base-url" style="display:none;">
+                        <label>Base URL</label>
+                        <input type="text" id="settings-base-url" placeholder="https://api.example.com/v1">
+                    </div>
+                    <div class="form-group">
+                        <label>模型名称（可选）</label>
+                        <input type="text" id="settings-model" placeholder="默认模型">
+                    </div>
+                    <button class="btn btn-sm" id="btn-test-ai">
+                        <svg width="14" height="14"><use href="#icon-link"/></svg> 测试连接
+                    </button>
+                    <span id="test-result" style="font-size:12px;margin-left:8px;"></span>
+                </div>
+                <div class="settings-section">
+                    <h3>📂 其他设置</h3>
+                    <div class="form-group">
+                        <label>默认输出路径</label>
+                        <input type="text" id="settings-output-dir" placeholder="默认：与源文件同目录">
+                    </div>
+                    <div class="form-group">
+                        <label>自动清理天数</label>
+                        <input type="number" id="settings-auto-clean" value="7" min="1" max="90">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" id="btn-cancel-settings">取消</button>
+                <button class="btn btn-primary" id="btn-save-settings">保存设置</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Toast 容器 ===== -->
+    <div id="toast-container"></div>
+
+    <!-- ===== CDN JS ===== -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@15/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/highlight.min.js"></script>
+
+    <script>
+    /* =============================================================
+       Demo 演示页 — 全部交互逻辑（模拟后端）
+       所有 "API 调用" 均用虚拟数据和 setTimeout 模拟
+       ============================================================= */
+
+    // ── 全局状态 ────────────────────────────
+    const appState = {
+        files: [],
+        config: {
+            mode: 'auto', fast: false, startPage: null, endPage: null,
+            parallel: false, outputDir: null, aiMode: false,
+            aiProvider: 'deepseek', detectHeadings: true
+        },
+        currentTask: { taskId: null, status: 'idle', phase: null, progress: { current: 0, total: 0, message: '', eta: null } },
+        result: { markdown: null, outputPath: null, stats: null, taskId: null, _batchIndex: -1 },
+        ui: { darkMode: false, previewFontSize: 15, splitRatio: 50, settingsOpen: false, historyExpanded: true, sourceVisible: true }
+    };
+    let _batchResults = [];
+    let _batchIndex = 0;
+    let _simTimer = null;
+
+    const DEMO_MARKDOWN = `# 论数据产权的民法保护
+
+## 一、问题的提出
+
+数据作为新型生产要素，其产权归属与保护路径是当前法学研究的核心议题。《民法典》第 127 条虽然为数据财产权预留了立法空间，但具体规则尚付阙如。
+
+司法实践中，涉及数据权属的纠纷呈逐年上升趋势：
+
+| 年份 | 案件数量 | 主要争议类型 |
+|------|---------|-------------|
+| 2022 | 1,247 | 用户数据爬取 |
+| 2023 | 2,891 | 企业数据竞争 |
+| 2024 | 5,603 | 个人信息与数据资产交叉 |
+
+## 二、数据产权的性质界定
+
+### （一）物权说之反思
+
+将数据产权纳入物权体系存在以下障碍：
+
+1. **客体特定原则的突破**：数据具有非独占性和可复制性，与传统有体物的排他支配属性存在本质差异
+2. **公示方式的困境**：物权变动以登记或交付为公示方式，而数据的流通难以适用传统公示制度
+3. **排他效力的局限**：数据价值往往在于共享和流转，绝对的排他权可能阻碍数据要素市场的发展
+
+### （二）知识产权说之检视
+
+知识产权制度对数据的保护同样面临适配难题：
+
+> 「知识产权保护的是创造性智力成果，而大量原始数据并不具备创造性要件。」—— 王利明教授
+
+- 原始数据的**独创性门槛**难以跨越
+- 著作权保护"表达"而非"事实"的二分法使数据内容本身落入公共领域
+- 专利制度的新颖性要求和审查周期与数据的快速迭代不匹配
+
+### （三）新型权利说的展开
+
+学界逐步形成共识：数据权利应当作为一种**独立的新型财产权**加以建构。其核心特征包括：
+
+1. 权利客体的无形性与非独占性
+2. 权利内容的"控制 + 利用"双层结构
+3. 保护期限的灵活性与场景化
+
+## 三、立法路径选择
+
+### （一）解释论路径
+
+在单行立法出台前，可以通过对《民法典》相关条款的**目的性扩张解释**提供过渡性保护：
+
+\`\`\`python
+# 示例：数据权利验证逻辑（仅供演示）
+class DataRightsValidator:
+    """数据产权合法性校验器"""
+
+    def __init__(self, data_source: str):
+        self.source = data_source
+        self.checks = []
+
+    def validate_ownership(self) -> bool:
+        """验证数据所有权链条的完整性"""
+        if not self.source:
+            raise ValueError("数据来源不能为空")
+        return len(self.checks) >= 2
+
+    def check_compliance(self, regulation: str = "GDPR") -> dict:
+        """检查合规状态"""
+        return {
+            "status": "compliant",
+            "checked_at": "2026-07-07",
+            "regulation": regulation
+        }
+\`\`\`
+
+### （二）立法论建议
+
+未来的数据产权单行法应当重点关注以下制度设计：
+
+| 制度模块 | 核心功能 | 参考立法例 |
+|----------|----------|-----------|
+| 数据分类分级 | 按敏感度和商业价值划分保护等级 | 《数据安全法》第 21 条 |
+| 权利登记 | 建立数据产权的公示与查询机制 | 欧盟《数据法案》 |
+| 合理使用 | 为科研、公共利益目的预留豁免空间 | 日本《官民数据活用推进基本法》 |
+| 侵权救济 | 举证责任倒置 + 法定赔偿制度 | 《个人信息保护法》第 69 条 |
+
+## 四、结论
+
+数据产权的民法保护不应简单套用传统物权或知识产权的单一分析框架，而应立足于数据的**技术特征**与**经济属性**，建构一套兼顾权益保护与流通促进的**双层权利体系**。
+
+> **核心命题**：在激励数据生产与保障数据流通之间寻找制度平衡，是数字时代民法学者面临的根本挑战。
+`;
+
+    // ── 工具函数 ────────────────────────────
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    function showToast(message, type, duration) {
+        if (!message) return;
+        type = type || 'info';
+        duration = duration !== undefined ? duration : 3000;
+        const container = document.getElementById('toast-container');
+        if (container.children.length >= 3) { removeToast(container.firstElementChild); }
+        const icons = { success: 'icon-check', error: 'icon-x', info: 'icon-info', warning: 'icon-warning' };
+        const el = document.createElement('div');
+        el.className = 'toast toast-' + type;
+        el.innerHTML = '<svg width="16" height="16"><use href="#' + (icons[type] || 'icon-info') + '"/></svg>' +
+                       '<span>' + escapeHtml(message) + '</span>' +
+                       '<button class="toast-close">×</button>';
+        el.querySelector('.toast-close').onclick = function() { removeToast(el); };
+        container.appendChild(el);
+        if (duration > 0) { setTimeout(function() { removeToast(el); }, duration); }
+    }
+
+    function removeToast(el) {
+        if (!el || el.classList.contains('removing')) return;
+        el.classList.add('removing');
+        setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 300);
+    }
+
+    function formatSize(bytes) {
+        if (bytes > 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        return (bytes / 1024).toFixed(1) + ' KB';
+    }
+
+    function formatTime(isoStr) {
+        const d = new Date(isoStr);
+        const now = new Date();
+        const diff = Math.floor((now - d) / 1000);
+        if (diff < 60) return '刚刚';
+        if (diff < 3600) return Math.floor(diff / 60) + ' 分钟前';
+        if (diff < 86400) return Math.floor(diff / 3600) + ' 小时前';
+        return d.toLocaleDateString('zh-CN');
+    }
+
+    // ── 状态机 ────────────────────────────
+    function setPageState(state) {
+        const configPanel = document.getElementById('config-panel');
+        const progressPanel = document.getElementById('progress-panel');
+        const resultPanel = document.getElementById('result-panel');
+        const btnConvert = document.getElementById('btn-convert');
+        const mainContent = document.getElementById('main-content');
+
+        switch (state) {
+            case 'idle':
+            case 'ready':
+                configPanel.classList.remove('disabled');
+                progressPanel.classList.remove('show');
+                resultPanel.classList.remove('show');
+                mainContent.classList.remove('converting');
+                btnConvert.disabled = (appState.files.length === 0);
+                btnConvert.innerHTML = '<svg width="18" height="18"><use href="#icon-play"/></svg> 🚀 开始转换';
+                appState.currentTask.status = 'idle';
+                break;
+            case 'converting':
+                configPanel.classList.add('disabled');
+                progressPanel.classList.add('show');
+                resultPanel.classList.remove('show');
+                mainContent.classList.add('converting');
+                btnConvert.disabled = true;
+                btnConvert.innerHTML = '⏳ 转换中…';
+                document.getElementById('progress-bar').className = 'progress-bar-inner';
+                document.getElementById('progress-bar').style.width = '0%';
+                document.getElementById('progress-percent').textContent = '0%';
+                document.getElementById('progress-phase').textContent = '准备中…';
+                document.getElementById('progress-eta').textContent = '';
+                appState.currentTask.status = 'running';
+                break;
+            case 'completed':
+                configPanel.classList.remove('disabled');
+                progressPanel.classList.remove('show');
+                resultPanel.classList.add('show');
+                mainContent.classList.add('converting');
+                setTimeout(function() { mainContent.classList.remove('converting'); }, 300);
+                btnConvert.disabled = (appState.files.length === 0);
+                btnConvert.innerHTML = '<svg width="18" height="18"><use href="#icon-play"/></svg> 🚀 开始转换';
+                appState.currentTask.status = 'idle';
+                break;
+            case 'error':
+                configPanel.classList.remove('disabled');
+                progressPanel.classList.add('show');
+                resultPanel.classList.remove('show');
+                btnConvert.disabled = (appState.files.length === 0);
+                btnConvert.innerHTML = '<svg width="18" height="18"><use href="#icon-play"/></svg> 🚀 重试';
+                document.getElementById('progress-bar').className = 'progress-bar-inner error-bg';
+                document.getElementById('progress-bar').style.width = '100%';
+                appState.currentTask.status = 'idle';
+                break;
+        }
+    }
+
+    // ── 深色模式 ────────────────────────────
+    function toggleDarkMode() {
+        const html = document.documentElement;
+        const isDark = html.getAttribute('data-theme') === 'dark';
+        if (isDark) {
+            html.removeAttribute('data-theme');
+            document.getElementById('hljs-theme').href = 'https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github.min.css';
+        } else {
+            html.setAttribute('data-theme', 'dark');
+            document.getElementById('hljs-theme').href = 'https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github-dark.min.css';
+        }
+        appState.ui.darkMode = !isDark;
+        saveUIPrefs();
+    }
+
+    function saveUIPrefs() {
+        try { localStorage.setItem('demo_ui_prefs', JSON.stringify({ darkMode: appState.ui.darkMode, previewFontSize: appState.ui.previewFontSize, splitRatio: appState.ui.splitRatio })); } catch(e) {}
+    }
+
+    function loadUIPrefs() {
+        try {
+            const data = JSON.parse(localStorage.getItem('demo_ui_prefs'));
+            if (data) {
+                if (data.darkMode) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    document.getElementById('hljs-theme').href = 'https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11/styles/github-dark.min.css';
+                }
+                appState.ui = Object.assign(appState.ui, data);
+            }
+        } catch(e) {}
+    }
+
+    // ── Demo 文件管理 ─────────────────────────
+    const DEMO_FILE_PRESETS = [
+        { fileId: 'demo-file-001', filename: '法学论文示例.pdf', size: 4400123, pages: 44, detectedMode: 'text', type: 'demo' },
+        { fileId: 'demo-file-002', filename: '扫描书籍示例.pdf', size: 18200456, pages: 312, detectedMode: 'scan', type: 'demo' },
+        { fileId: 'demo-file-003', filename: '数据分析报告.docx', size: 890234, pages: 0, detectedMode: 'markitdown', type: 'demo' }
+    ];
+
+    function resetDemoFiles(silent) {
+        // 深拷贝预设文件列表
+        appState.files = DEMO_FILE_PRESETS.map(function(f) {
+            return Object.assign({}, f, { fileId: 'demo-file-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6) });
+        });
+        renderFileList();
+        updateConvertButton();
+        if (!silent) showToast('已恢复 3 个 Demo 文件', 'info');
+    }
+
+    function removeFile(index) {
+        const name = appState.files[index].filename;
+        appState.files.splice(index, 1);
+        renderFileList();
+        updateConvertButton();
+        showToast('已移除：' + name, 'info');
+        if (appState.files.length === 0) { setPageState('idle'); }
+    }
+
+    function renderFileList() {
+        const container = document.getElementById('file-list');
+        container.innerHTML = '';
+        if (appState.files.length === 0) {
+            container.innerHTML = '<div style="text-align:center;color:var(--text-tertiary);padding:20px;font-size:13px;">文件列表为空 — 点击下方「重置 Demo 文件」恢复演示文件</div>';
+            return;
+        }
+        appState.files.forEach(function(f, i) {
+            const item = document.createElement('div');
+            item.className = 'file-item';
+            let modeLabel = '', modeClass = '';
+            if (f.detectedMode === 'text') { modeLabel = '文字型'; modeClass = 'fmt-pdf'; }
+            else if (f.detectedMode === 'scan') { modeLabel = '扫描版'; modeClass = 'fmt-pdf'; }
+            else if (f.detectedMode === 'markitdown') {
+                const ext = f.filename.split('.').pop().toLowerCase();
+                modeLabel = ext.toUpperCase();
+                modeClass = (ext === 'pptx') ? 'fmt-pptx' : 'fmt-docx';
+            } else { modeLabel = '自动检测'; modeClass = 'fmt-pdf'; }
+
+            item.innerHTML =
+                '<svg width="20" height="20" style="color:var(--accent-blue);flex-shrink:0"><use href="#icon-doc"/></svg>' +
+                '<div class="file-info">' +
+                    '<div class="file-name">' + escapeHtml(f.filename) + '</div>' +
+                    '<div class="file-meta">' +
+                        '<span>' + formatSize(f.size) + '</span>' +
+                        (f.pages > 0 ? '<span>' + f.pages + ' 页</span>' : '') +
+                        '<span class="fmt-badge ' + modeClass + '">' + modeLabel + '</span>' +
+                        '<span class="fmt-badge" style="background:rgba(245,158,11,0.1);color:#D97706;">Demo</span>' +
+                    '</div>' +
+                '</div>' +
+                '<button class="file-remove" data-index="' + i + '">×</button>';
+            container.appendChild(item);
+        });
+        container.querySelectorAll('.file-remove').forEach(function(btn) {
+            btn.addEventListener('click', function() { removeFile(parseInt(this.dataset.index)); });
+        });
+    }
+
+    function updateConvertButton() {
+        const btn = document.getElementById('btn-convert');
+        btn.disabled = (appState.files.length === 0 || appState.currentTask.status === 'running');
+    }
+
+    // ── 配置交互 ────────────────────────────
+    function initToggles() {
+        document.querySelectorAll('.toggle-switch').forEach(function(t) {
+            t.addEventListener('click', function() {
+                this.classList.toggle('on');
+                syncConfigFromUI();
+            });
+        });
+    }
+
+    function syncConfigFromUI() {
+        appState.config.mode = document.getElementById('mode-select').value;
+        appState.config.fast = document.getElementById('toggle-fast').classList.contains('on');
+        appState.config.parallel = document.getElementById('toggle-parallel').classList.contains('on');
+        appState.config.aiMode = document.getElementById('toggle-ai').classList.contains('on');
+        appState.config.detectHeadings = document.getElementById('toggle-headings').classList.contains('on');
+        appState.config.aiProvider = document.getElementById('ai-provider-select').value;
+        const ps = document.getElementById('page-start').value;
+        const pe = document.getElementById('page-end').value;
+        appState.config.startPage = ps ? parseInt(ps) : null;
+        appState.config.endPage = pe ? parseInt(pe) : null;
+        appState.config.outputDir = document.getElementById('output-path').value || null;
+
+        // AI 视觉反馈
+        document.getElementById('config-panel').classList.toggle('ai-active', appState.config.aiMode);
+        document.getElementById('ai-banner').classList.toggle('show', appState.config.aiMode);
+        document.getElementById('ai-provider-select').style.display = appState.config.aiMode ? '' : 'none';
+        document.getElementById('ai-vision-warn').classList.toggle('show', appState.config.aiMode && appState.config.aiProvider === 'deepseek');
+    }
+
+    function syncUIToConfig() {
+        document.getElementById('mode-select').value = appState.config.mode;
+        document.getElementById('toggle-fast').classList.toggle('on', appState.config.fast);
+        document.getElementById('toggle-parallel').classList.toggle('on', appState.config.parallel);
+        document.getElementById('toggle-ai').classList.toggle('on', appState.config.aiMode);
+        document.getElementById('toggle-headings').classList.toggle('on', appState.config.detectHeadings);
+        document.getElementById('ai-provider-select').value = appState.config.aiProvider;
+        document.getElementById('page-start').value = appState.config.startPage || '';
+        document.getElementById('page-end').value = appState.config.endPage || '';
+        document.getElementById('output-path').value = appState.config.outputDir || '';
+        document.getElementById('config-panel').classList.toggle('ai-active', appState.config.aiMode);
+        document.getElementById('ai-banner').classList.toggle('show', appState.config.aiMode);
+        document.getElementById('ai-provider-select').style.display = appState.config.aiMode ? '' : 'none';
+        document.getElementById('ai-vision-warn').classList.toggle('show', appState.config.aiMode && appState.config.aiProvider === 'deepseek');
+    }
+
+    function applyPreset(type) {
+        if (type === 'paper') {
+            appState.config.mode = 'text'; appState.config.fast = false;
+            if (document.getElementById('ai-provider-select').value) appState.config.aiMode = true;
+        } else if (type === 'book') {
+            appState.config.mode = 'ocr'; appState.config.fast = true; appState.config.parallel = true;
+        } else if (type === 'last') {
+            try {
+                const s = JSON.parse(localStorage.getItem('demo_settings') || '{}');
+                if (s.lastConfig) Object.assign(appState.config, s.lastConfig);
+            } catch(e) {}
+        }
+        syncUIToConfig();
+        saveLastConfig();
+        // 按钮短暂反馈
+        const btn = document.querySelector('[data-preset="' + type + '"]');
+        if (btn) { btn.classList.add('applied'); setTimeout(function() { btn.classList.remove('applied'); }, 800); }
+        showToast({ paper: '已应用「知网论文」预设', book: '已应用「扫描书籍」预设', last: '已应用「最近使用」配置' }[type], 'info');
+    }
+
+    function saveLastConfig() {
+        try {
+            const s = JSON.parse(localStorage.getItem('demo_settings') || '{}');
+            s.lastConfig = Object.assign({}, appState.config);
+            localStorage.setItem('demo_settings', JSON.stringify(s));
+        } catch(e) {}
+    }
+
+    // ── 进度模拟 ────────────────────────────
+    function simulateConversion() {
+        const fakeTaskId = 'demo-task-' + Date.now();
+        appState.currentTask.taskId = fakeTaskId;
+        setPageState('converting');
+
+        const file = appState.files[0] || DEMO_FILE_PRESETS[0];
+        const isOCR = appState.config.mode === 'ocr' || (appState.config.mode === 'auto' && file.detectedMode === 'scan');
+        const hasAI = appState.config.aiMode && isOCR;
+        const totalPages = file.pages || 44;
+
+        // 渲染批量队列
+        _batchResults = appState.files.map(function(f, i) {
+            return { name: f.filename, taskId: 'demo-task-' + Date.now() + '-' + i, markdown: null, stats: null, status: (i === 0 ? 'running' : 'pending') };
+        });
+        _batchIndex = 0;
+        renderBatchQueue();
+
+        const phases = [
+            { phase: 'detect', message: '正在检测 PDF 类型…', current: 0, total: 0, duration: 800, eta: null },
+            isOCR
+                ? { phase: 'extract', message: '正在 OCR 识别…', current: 0, total: totalPages, duration: 3000, eta: 180 }
+                : { phase: 'extract', message: '正在提取文本…', current: 0, total: 0, duration: 2000, eta: null },
+            { phase: 'postprocess', message: '正在清洗页眉页脚…', current: 0, total: 0, duration: 1000, eta: null },
+        ];
+
+        if (hasAI) {
+            phases.splice(2, 0, { phase: 'ai_correction', message: '🤖 AI 正在校对…', current: 0, total: totalPages, duration: 2500, eta: 120 });
+        }
+
+        let phaseIdx = 0;
+        let progressPct = 0;
+        const phaseWeights = phases.map(function(_, i) { return (i + 1) / phases.length; });
+
+        function runPhase() {
+            if (phaseIdx >= phases.length) {
+                // 完成！
+                onConversionComplete(fakeTaskId, file);
+                return;
+            }
+            const ph = phases[phaseIdx];
+            const targetPct = Math.round(phaseWeights[phaseIdx] * 100);
+            const startPct = progressPct;
+            const steps = Math.max(5, Math.round(ph.duration / 200));
+            const increment = (targetPct - startPct) / steps;
+            let step = 0;
+
+            updateProgressUI(ph.phase, ph.message, 0, ph.total, ph.eta);
+
+            function stepProgress() {
+                if (appState.currentTask.status === 'cancelled') return;
+                step++;
+                progressPct = Math.min(100, Math.round(startPct + increment * step));
+                const bar = document.getElementById('progress-bar');
+                bar.style.width = progressPct + '%';
+                document.getElementById('progress-percent').textContent = progressPct + '%';
+
+                if (isOCR && ph.current !== undefined && ph.total > 0) {
+                    const pageCurrent = Math.min(ph.total, Math.round((step / steps) * ph.total));
+                    document.getElementById('progress-phase').textContent =
+                        (ph.phase === 'ai_correction' ? '🤖 AI 正在校对第 ' : '正在 OCR 识别第 ') + pageCurrent + '/' + ph.total + ' 页…';
+                    if (ph.eta) {
+                        const remaining = Math.round(ph.eta * (1 - step / steps));
+                        document.getElementById('progress-eta').textContent = '预计剩余 ' + Math.ceil(remaining / 60) + ' 分 ' + (remaining % 60) + ' 秒';
+                    }
+                }
+
+                if (step >= steps) {
+                    phaseIdx++;
+                    setTimeout(runPhase, 200);
+                } else {
+                    _simTimer = setTimeout(stepProgress, ph.duration / steps);
+                }
+            }
+            stepProgress();
+        }
+
+        // 先显示初始状态
+        document.getElementById('progress-phase').textContent = '准备中…';
+        document.getElementById('progress-bar').style.width = '0%';
+        document.getElementById('progress-percent').textContent = '0%';
+        _simTimer = setTimeout(runPhase, 400);
+    }
+
+    function updateProgressUI(phase, message, current, total, eta) {
+        document.getElementById('progress-phase').textContent = message;
+        document.getElementById('progress-eta').textContent = eta ? '预计剩余约 ' + Math.ceil(eta / 60) + ' 分钟' : '';
+        // isOCR 时如果 total 为 0 启动不确定动画
+        const bar = document.getElementById('progress-bar');
+        if (phase === 'extract' && total === 0 && appState.config.mode !== 'ocr') {
+            bar.classList.add('indeterminate');
+        } else {
+            bar.classList.remove('indeterminate');
+        }
+    }
+
+    function onConversionComplete(taskId, file) {
+        const bar = document.getElementById('progress-bar');
+        bar.style.width = '100%';
+        bar.classList.add('done');
+        document.getElementById('progress-percent').textContent = '100%';
+        document.getElementById('progress-phase').textContent = '转换完成 ✓';
+        document.getElementById('progress-eta').textContent = '';
+
+        // 更新批量结果
+        if (_batchResults.length > 0) {
+            _batchResults[0].status = 'done';
+            _batchResults[0].markdown = DEMO_MARKDOWN;
+            _batchResults[0].taskId = taskId;
+            renderBatchQueue();
+        }
+
+        // 加载结果
+        const stats = {
+            mode: appState.config.mode === 'auto' ? (file.detectedMode === 'scan' ? 'ocr' : 'text') : appState.config.mode,
+            pages: file.pages || 44,
+            durationSeconds: 4.5 + Math.random() * 2,
+            aiCorrected: appState.config.aiMode
+        };
+        appState.result = {
+            markdown: DEMO_MARKDOWN,
+            outputPath: '/demo/output/' + file.filename.replace(/\.\w+$/, '.md'),
+            stats: stats,
+            taskId: taskId,
+            _batchIndex: 0
+        };
+
+        // 显示结果
+        document.getElementById('result-filename').textContent = file.filename;
+        renderSource(DEMO_MARKDOWN);
+        renderPreview(DEMO_MARKDOWN);
+        buildOutline(DEMO_MARKDOWN);
+        document.getElementById('source-pane').style.display = '';
+        document.getElementById('preview-pane').style.display = '';
+
+        // 单文件模式隐藏标签页
+        document.getElementById('result-file-tabs').classList.remove('has-items');
+        document.getElementById('result-file-nav').classList.remove('has-items');
+
+        setPageState('completed');
+        saveHistoryRecord(file, taskId, stats);
+        saveLastConfig();
+        showToast('转换完成！耗时 ' + stats.durationSeconds.toFixed(1) + ' 秒', 'success');
+    }
+
+    function renderBatchQueue() {
+        const container = document.getElementById('batch-queue');
+        if (_batchResults.length <= 1) { container.classList.remove('has-items'); return; }
+        container.classList.add('has-items');
+        container.innerHTML = _batchResults.map(function(r, i) {
+            let cls = 'batch-item';
+            if (r.status === 'running') cls += ' batch-running';
+            else if (r.status === 'done') cls += ' batch-done';
+            return '<span class="' + cls + '" data-idx="' + i + '">' +
+                   (r.status === 'done' ? '✅ ' : r.status === 'running' ? '🔄 ' : '⏳ ') +
+                   escapeHtml(r.name) + '</span>';
+        }).join('');
+        container.querySelectorAll('.batch-done').forEach(function(el) {
+            el.addEventListener('click', function() {
+                const idx = parseInt(this.dataset.idx);
+                if (idx === 0 && _batchResults[0].markdown) {
+                    renderSource(_batchResults[0].markdown);
+                    renderPreview(_batchResults[0].markdown);
+                    buildOutline(_batchResults[0].markdown);
+                }
+            });
+        });
+    }
+
+    function cancelConversion() {
+        if (_simTimer) { clearTimeout(_simTimer); _simTimer = null; }
+        appState.currentTask.status = 'cancelled';
+        document.getElementById('progress-bar').style.width = '100%';
+        document.getElementById('progress-phase').textContent = '已取消';
+        document.getElementById('progress-percent').textContent = '';
+        document.getElementById('progress-bar').className = 'progress-bar-inner';
+        showToast('转换已取消', 'warning');
+        setTimeout(function() { setPageState('ready'); }, 1500);
+    }
+
+    // ── 结果渲染 ────────────────────────────
+    function renderSource(md) {
+        const code = document.querySelector('#source-pane pre code');
+        code.textContent = md;
+        if (typeof hljs !== 'undefined') { hljs.highlightElement(code); }
+    }
+
+    function renderPreview(md) {
+        if (typeof marked === 'undefined') { document.getElementById('preview-pane').innerHTML = '<p style="color:var(--color-danger)">marked.js 未加载，无法渲染预览</p>'; return; }
+        if (!marked._demoConfigured) {
+            marked.setOptions({ gfm: true, breaks: false });
+            marked._demoConfigured = true;
+        }
+        const html = marked.parse(md);
+        document.getElementById('preview-pane').innerHTML = html;
+        document.getElementById('preview-pane').style.fontSize = appState.ui.previewFontSize + 'px';
+        // 代码块高亮
+        if (typeof hljs !== 'undefined') {
+            document.querySelectorAll('#preview-pane pre code').forEach(function(el) { hljs.highlightElement(el); });
+        }
+    }
+
+    function buildOutline(md) {
+        const container = document.getElementById('outline-nav');
+        const lines = md.split('\n');
+        const headings = [];
+        lines.forEach(function(line) {
+            const m = line.match(/^(#{1,3})\s+(.+)/);
+            if (m) { headings.push({ level: m[1].length, text: m[2].trim() }); }
+        });
+        if (headings.length === 0) { container.innerHTML = '<div style="font-size:12px;color:var(--text-tertiary);padding:8px;">无标题</div>'; return; }
+        container.innerHTML = headings.map(function(h, i) {
+            return '<span class="outline-item level-' + h.level + '" data-idx="' + i + '">' + escapeHtml(h.text) + '</span>';
+        }).join('');
+        container.querySelectorAll('.outline-item').forEach(function(el) {
+            el.addEventListener('click', function() {
+                const targetText = headings[parseInt(this.dataset.idx)].text;
+                const preview = document.getElementById('preview-pane');
+                const hTags = preview.querySelectorAll('h1, h2, h3');
+                hTags.forEach(function(h) {
+                    if (h.textContent.trim() === targetText) { h.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+                });
+            });
+        });
+    }
+
+    // ── 历史记录 ────────────────────────────
+    function loadHistory() {
+        try { return JSON.parse(localStorage.getItem('demo_history') || '[]'); } catch(e) { return []; }
+    }
+
+    function saveHistory(records) {
+        try { localStorage.setItem('demo_history', JSON.stringify(records)); } catch(e) {}
+    }
+
+    function saveHistoryRecord(file, taskId, stats) {
+        const records = loadHistory();
+        records.unshift({
+            id: taskId,
+            sourceName: file.filename,
+            sourceSize: file.size,
+            sourcePages: file.pages,
+            outputPath: '/demo/output/' + file.filename.replace(/\.\w+$/, '.md'),
+            mode: stats.mode,
+            fast: appState.config.fast,
+            aiEnabled: appState.config.aiMode,
+            startPage: appState.config.startPage,
+            endPage: appState.config.endPage,
+            timestamp: new Date().toISOString(),
+            duration: stats.durationSeconds,
+            status: 'completed'
+        });
+        if (records.length > 50) records.length = 50;
+        saveHistory(records);
+        renderHistory();
+    }
+
+    function renderHistory() {
+        const records = loadHistory();
+        const container = document.getElementById('history-list');
+        const empty = document.getElementById('history-empty');
+        const clearBtn = document.getElementById('btn-clear-history');
+
+        if (records.length === 0) {
+            container.innerHTML = '';
+            empty.classList.add('show');
+            clearBtn.style.display = 'none';
+            return;
+        }
+        empty.classList.remove('show');
+        clearBtn.style.display = 'inline-flex';
+
+        container.innerHTML = records.map(function(r) {
+            let modeTag = '';
+            if (r.mode === 'text') modeTag = '<span class="hist-tag text-mode">文字型</span>';
+            else if (r.mode === 'ocr') modeTag = '<span class="hist-tag ocr-mode">扫描版</span>';
+            if (r.aiEnabled) modeTag += ' <span class="hist-tag ai-mode">AI</span>';
+            const statusTag = '<span class="hist-tag status-done">✓ 成功</span>';
+
+            return '<div class="history-item">' +
+                '<div class="hist-name" title="' + escapeHtml(r.sourceName) + '">' + escapeHtml(r.sourceName) + '</div>' +
+                '<div class="hist-meta">' + formatTime(r.timestamp) + '</div>' +
+                '<div class="hist-meta">' + (r.duration ? r.duration.toFixed(1) + 's' : '—') + '</div>' +
+                modeTag + statusTag +
+                '<button class="btn btn-sm btn-text hist-view" data-id="' + r.id + '" title="回看">' +
+                    '<svg width="14" height="14"><use href="#icon-eye"/></svg>' +
+                '</button>' +
+                '<button class="btn btn-sm btn-text hist-del" data-id="' + r.id + '" title="删除">' +
+                    '<svg width="14" height="14"><use href="#icon-x"/></svg>' +
+                '</button>' +
+            '</div>';
+        }).join('');
+
+        container.querySelectorAll('.hist-view').forEach(function(btn) {
+            btn.addEventListener('click', function() { viewHistoryRecord(this.dataset.id); });
+        });
+        container.querySelectorAll('.hist-del').forEach(function(btn) {
+            btn.addEventListener('click', function() { deleteHistoryRecord(this.dataset.id); });
+        });
+    }
+
+    function viewHistoryRecord(id) {
+        const records = loadHistory();
+        const r = records.find(function(x) { return x.id === id; });
+        if (!r) { showToast('记录不存在', 'error'); return; }
+        // 对于 Demo，直接显示 Demo Markdown
+        document.getElementById('result-filename').textContent = r.sourceName;
+        renderSource(DEMO_MARKDOWN);
+        renderPreview(DEMO_MARKDOWN);
+        buildOutline(DEMO_MARKDOWN);
+        document.getElementById('result-file-tabs').classList.remove('has-items');
+        document.getElementById('result-file-nav').classList.remove('has-items');
+        document.getElementById('source-pane').style.display = '';
+        document.getElementById('preview-pane').style.display = '';
+        appState.result.markdown = DEMO_MARKDOWN;
+        appState.result.taskId = id;
+        setPageState('completed');
+        showToast('已加载历史记录：' + r.sourceName, 'info');
+    }
+
+    function deleteHistoryRecord(id) {
+        let records = loadHistory();
+        records = records.filter(function(x) { return x.id !== id; });
+        saveHistory(records);
+        renderHistory();
+        showToast('已删除记录', 'info');
+    }
+
+    function clearAllHistory() {
+        if (!confirm('确定要清除全部转换历史吗？此操作不可恢复。')) return;
+        saveHistory([]);
+        renderHistory();
+        showToast('历史已清空', 'info');
+    }
+
+    // ── 设置面板 ────────────────────────────
+    const AI_PRESETS = {
+        deepseek:  { name: 'DeepSeek',  baseUrl: 'https://api.deepseek.com/v1',                model: 'deepseek-chat',     hasVision: false },
+        doubao:    { name: '豆包',      baseUrl: 'https://ark.cn-beijing.volces.com/api/v3',   model: 'doubao-1.5-vision-pro', hasVision: true },
+        kimi:      { name: 'Kimi',      baseUrl: 'https://api.moonshot.cn/v1',                 model: 'moonshot-v1-8k',    hasVision: false },
+        qwen:      { name: '通义千问',  baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1', model: 'qwen-vl-plus', hasVision: true },
+        glm:       { name: '智谱 GLM',  baseUrl: 'https://open.bigmodel.cn/api/paas/v4',       model: 'glm-4v',            hasVision: true },
+        hunyuan:   { name: '混元',      baseUrl: 'https://api.hunyuan.cloud.tencent.com/v1',   model: 'hunyuan-vision',    hasVision: true },
+        minimax:   { name: 'MiniMax',   baseUrl: 'https://api.minimaxi.com/v1',                 model: 'abab6.5s-chat',     hasVision: false },
+        openai:    { name: 'OpenAI',    baseUrl: 'https://api.openai.com/v1',                   model: 'gpt-4o',            hasVision: true },
+        anthropic: { name: 'Anthropic', baseUrl: 'https://api.anthropic.com/v1',                model: 'claude-sonnet-4-6', hasVision: true },
+        custom:    { name: '自定义',    baseUrl: '',                                            model: '',                  hasVision: true }
+    };
+
+    function openSettings() {
+        const s = loadSettingsObj();
+        document.getElementById('settings-ai-provider').value = s.aiProvider || 'deepseek';
+        document.getElementById('settings-api-key').value = (s.providers && s.providers[s.aiProvider || 'deepseek'] && s.providers[s.aiProvider || 'deepseek'].apiKey) || s.apiKey || 'sk-demo-xxxxxxxxxxxx';
+        document.getElementById('settings-base-url').value = (s.providers && s.providers[s.aiProvider || 'deepseek'] && s.providers[s.aiProvider || 'deepseek'].baseUrl) || AI_PRESETS[s.aiProvider || 'deepseek'].baseUrl;
+        document.getElementById('settings-model').value = (s.providers && s.providers[s.aiProvider || 'deepseek'] && s.providers[s.aiProvider || 'deepseek'].model) || AI_PRESETS[s.aiProvider || 'deepseek'].model;
+        document.getElementById('settings-output-dir').value = s.defaultOutputDir || '';
+        document.getElementById('settings-auto-clean').value = s.autoCleanDays || 7;
+        handleSettingsProviderChange();
+        document.getElementById('settings-overlay').classList.add('visible');
+        document.getElementById('test-result').textContent = '';
+    }
+
+    function closeSettings() {
+        document.getElementById('settings-overlay').classList.remove('visible');
+    }
+
+    function loadSettingsObj() {
+        try { return JSON.parse(localStorage.getItem('demo_settings') || '{}'); } catch(e) { return {}; }
+    }
+
+    function saveSettingsObj(obj) {
+        try { localStorage.setItem('demo_settings', JSON.stringify(obj)); } catch(e) {}
+    }
+
+    function handleSettingsProviderChange() {
+        const provider = document.getElementById('settings-ai-provider').value;
+        const preset = AI_PRESETS[provider] || {};
+        document.getElementById('group-base-url').style.display = (provider === 'custom') ? '' : 'none';
+        if (provider !== 'custom' && preset.baseUrl) {
+            document.getElementById('settings-base-url').value = preset.baseUrl;
+        }
+        if (preset.model && !document.getElementById('settings-model').value) {
+            document.getElementById('settings-model').value = preset.model;
+        }
+    }
+
+    function saveSettings() {
+        const provider = document.getElementById('settings-ai-provider').value;
+        const s = loadSettingsObj();
+        s.aiProvider = provider;
+        if (!s.providers) s.providers = {};
+        if (!s.providers[provider]) s.providers[provider] = {};
+        s.providers[provider].apiKey = document.getElementById('settings-api-key').value;
+        s.providers[provider].baseUrl = document.getElementById('settings-base-url').value;
+        s.providers[provider].model = document.getElementById('settings-model').value;
+        s.providers[provider]._testedOk = true;  // Demo 始终标记已测试
+        s.defaultOutputDir = document.getElementById('settings-output-dir').value;
+        s.autoCleanDays = parseInt(document.getElementById('settings-auto-clean').value) || 7;
+        s.lastConfig = Object.assign({}, appState.config);
+        saveSettingsObj(s);
+        closeSettings();
+        updateAIStatus();
+        showToast('设置已保存', 'success');
+    }
+
+    function simulateTestConnection() {
+        const btn = document.getElementById('btn-test-ai');
+        const result = document.getElementById('test-result');
+        btn.disabled = true;
+        btn.textContent = '测试中…';
+        result.textContent = '';
+        result.style.color = '';
+
+        setTimeout(function() {
+            btn.disabled = false;
+            btn.innerHTML = '<svg width="14" height="14"><use href="#icon-link"/></svg> 测试连接';
+            result.textContent = '✅ 连接成功（Demo 模拟）';
+            result.style.color = 'var(--color-success)';
+        }, 1500 + Math.random() * 1000);
+    }
+
+    function updateAIStatus() {
+        const s = loadSettingsObj();
+        const hasKey = s.providers && s.providers[s.aiProvider || 'deepseek'] && s.providers[s.aiProvider || 'deepseek'].apiKey;
+        const tested = hasKey && s.providers[s.aiProvider || 'deepseek']._testedOk;
+        const el = document.getElementById('ai-status');
+        if (tested) {
+            el.innerHTML = '🤖 AI 就绪';
+            el.style.color = 'var(--color-ai)';
+        } else if (hasKey) {
+            el.innerHTML = '🤖 AI 待验证';
+            el.style.color = 'var(--color-warning)';
+        } else {
+            el.innerHTML = '🤖 AI 未配置';
+            el.style.color = 'var(--text-tertiary)';
+        }
+    }
+
+    // ── 结果区工具栏 ─────────────────────────
+    function copySource() {
+        const md = appState.result.markdown || '';
+        if (!md) { showToast('无内容可复制', 'warning'); return; }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(md).then(function() { showToast('已复制到剪贴板', 'success'); })
+                .catch(function() { fallbackCopy(md); });
+        } else { fallbackCopy(md); }
+    }
+
+    function fallbackCopy(text) {
+        const ta = document.createElement('textarea');
+        ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); showToast('已复制到剪贴板', 'success'); } catch(e) { showToast('复制失败，请手动选择', 'error'); }
+        document.body.removeChild(ta);
+    }
+
+    function downloadMarkdown() {
+        const md = appState.result.markdown || '';
+        if (!md) { showToast('无内容可下载', 'warning'); return; }
+        const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = 'demo_output.md';
+        document.body.appendChild(a); a.click();
+        document.body.removeChild(a); URL.revokeObjectURL(url);
+        showToast('下载中…', 'success');
+    }
+
+    function toggleSourcePreview() {
+        const showSource = document.getElementById('source-pane').style.display !== 'none';
+        if (showSource) {
+            document.getElementById('source-pane').style.display = 'none';
+            document.getElementById('btn-view-toggle').innerHTML = '<svg width="14" height="14"><use href="#icon-memo"/></svg> 看预览';
+        } else {
+            document.getElementById('source-pane').style.display = '';
+            document.getElementById('btn-view-toggle').innerHTML = '<svg width="14" height="14"><use href="#icon-code"/></svg> 看源码';
+        }
+    }
+
+    function toggleOutline() {
+        const nav = document.getElementById('outline-nav');
+        nav.classList.toggle('open');
+        if (window.innerWidth < 1024) {
+            nav.classList.toggle('mobile-visible');
+        }
+    }
+
+    function changeFontSize(delta) {
+        appState.ui.previewFontSize = Math.max(12, Math.min(20, appState.ui.previewFontSize + delta));
+        document.getElementById('preview-pane').style.fontSize = appState.ui.previewFontSize + 'px';
+        saveUIPrefs();
+    }
+
+    function closeResult() {
+        document.getElementById('result-panel').classList.remove('show');
+        appState.result = { markdown: null, outputPath: null, stats: null, taskId: null, _batchIndex: -1 };
+        setPageState('ready');
+    }
+
+    // ── 分栏拖拽 ────────────────────────────
+    function initSplitDrag() {
+        const divider = document.getElementById('split-divider');
+        let dragging = false;
+        divider.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            dragging = true;
+            document.body.style.cursor = 'col-resize';
+            document.body.style.userSelect = 'none';
+        });
+        document.addEventListener('mousemove', function(e) {
+            if (!dragging) return;
+            const pane = document.getElementById('split-pane');
+            const rect = pane.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const ratio = Math.max(20, Math.min(80, (x / rect.width) * 100));
+            document.getElementById('source-pane').style.flex = ratio;
+            document.getElementById('preview-pane').style.flex = (100 - ratio);
+            appState.ui.splitRatio = ratio;
+        });
+        document.addEventListener('mouseup', function() {
+            if (dragging) { dragging = false; document.body.style.cursor = ''; document.body.style.userSelect = ''; saveUIPrefs(); }
+        });
+    }
+
+    // ── 初始化 ────────────────────────────
+    function init() {
+        loadUIPrefs();
+
+        // 应用分栏比例
+        document.getElementById('source-pane').style.flex = appState.ui.splitRatio;
+        document.getElementById('preview-pane').style.flex = (100 - appState.ui.splitRatio);
+
+        // 顶栏按钮
+        document.getElementById('btn-darkmode').addEventListener('click', toggleDarkMode);
+        document.getElementById('btn-settings').addEventListener('click', openSettings);
+
+        // 上传区 — Demo 模式：预置虚拟文件，不支持真实上传
+        document.getElementById('btn-reset-files').addEventListener('click', function() { resetDemoFiles(false); });
+
+        // 配置区
+        initToggles();
+        document.getElementById('mode-select').addEventListener('change', syncConfigFromUI);
+        document.getElementById('ai-provider-select').addEventListener('change', function() {
+            syncConfigFromUI();
+            document.getElementById('ai-vision-warn').classList.toggle('show', appState.config.aiMode && this.value === 'deepseek');
+        });
+
+        document.querySelectorAll('.btn-preset').forEach(function(btn) {
+            btn.addEventListener('click', function() { applyPreset(this.dataset.preset); });
+        });
+
+        document.getElementById('btn-convert').addEventListener('click', function() {
+            if (appState.files.length === 0) {
+                showToast('文件列表为空，请先点击「重置 Demo 文件」', 'warning');
+                return;
+            }
+            simulateConversion();
+        });
+
+        document.getElementById('btn-cancel').addEventListener('click', cancelConversion);
+
+        // 结果区工具栏
+        document.getElementById('btn-copy').addEventListener('click', copySource);
+        document.getElementById('btn-download-md').addEventListener('click', downloadMarkdown);
+        document.getElementById('btn-view-toggle').addEventListener('click', toggleSourcePreview);
+        document.getElementById('btn-outline-toggle').addEventListener('click', toggleOutline);
+        document.getElementById('btn-font-smaller').addEventListener('click', function() { changeFontSize(-1); });
+        document.getElementById('btn-font-larger').addEventListener('click', function() { changeFontSize(1); });
+        document.getElementById('btn-close-result').addEventListener('click', closeResult);
+
+        // 分栏拖拽
+        initSplitDrag();
+
+        // 历史区
+        document.getElementById('btn-clear-history').addEventListener('click', clearAllHistory);
+
+        // 设置面板
+        document.getElementById('btn-settings-close').addEventListener('click', closeSettings);
+        document.getElementById('btn-cancel-settings').addEventListener('click', closeSettings);
+        document.getElementById('settings-overlay').addEventListener('click', function(e) { if (e.target === this) closeSettings(); });
+        document.getElementById('btn-save-settings').addEventListener('click', saveSettings);
+        document.getElementById('btn-test-ai').addEventListener('click', simulateTestConnection);
+        document.getElementById('btn-toggle-key-vis').addEventListener('click', function() {
+            const inp = document.getElementById('settings-api-key');
+            inp.type = (inp.type === 'password') ? 'text' : 'password';
+        });
+        document.getElementById('settings-ai-provider').addEventListener('change', handleSettingsProviderChange);
+
+        // 初始状态 — 预加载 Demo 文件
+        resetDemoFiles(true);
+        updateConvertButton();
+        updateAIStatus();
+
+        // 预填充 Demo 历史
+        const existingHistory = loadHistory();
+        if (existingHistory.length === 0) {
+            const demoHistory = [
+                { id: 'demo-hist-001', sourceName: '论数据产权的民法保护.pdf', sourceSize: 4400123, sourcePages: 44, outputPath: '/demo/output/test.md', mode: 'text', fast: false, aiEnabled: false, startPage: 1, endPage: 44, timestamp: new Date(Date.now() - 3600000).toISOString(), duration: 3.2, status: 'completed' },
+                { id: 'demo-hist-002', sourceName: '中国民法典评注·总则编.pdf', sourceSize: 18200456, sourcePages: 312, outputPath: '/demo/output/scan.md', mode: 'ocr', fast: true, aiEnabled: true, startPage: 10, endPage: 50, timestamp: new Date(Date.now() - 86400000).toISOString(), duration: 45.8, status: 'completed' },
+                { id: 'demo-hist-003', sourceName: '数据合规全景图.docx', sourceSize: 890234, sourcePages: 0, outputPath: '/demo/output/docx.md', mode: 'text', fast: false, aiEnabled: false, startPage: null, endPage: null, timestamp: new Date(Date.now() - 172800000).toISOString(), duration: 1.1, status: 'completed' }
+            ];
+            saveHistory(demoHistory);
+        }
+        renderHistory();
+
+        // 预填充 Demo 设置
+        const existingSettings = loadSettingsObj();
+        if (!existingSettings.aiProvider) {
+            saveSettingsObj({
+                aiProvider: 'deepseek',
+                providers: {
+                    deepseek: { apiKey: 'sk-demo-xxxxxxxxxxxx', baseUrl: 'https://api.deepseek.com/v1', model: 'deepseek-chat', _testedOk: true },
+                    qwen: { apiKey: 'sk-demo-yyyyyyyyyyyy', baseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1', model: 'qwen-vl-plus', _testedOk: true },
+                    kimi: { apiKey: 'sk-demo-zzzzzzzzzzzz', baseUrl: 'https://api.moonshot.cn/v1', model: 'moonshot-v1-8k', _testedOk: true }
+                },
+                defaultOutputDir: '',
+                autoCleanDays: 7,
+                lastConfig: { mode: 'auto', fast: false, startPage: null, endPage: null, parallel: false, outputDir: null, aiMode: false, aiProvider: 'deepseek', detectHeadings: true }
+            });
+        }
+        updateAIStatus();
+
+        // 窗口 resize — 自动处理桌面/平板/手机之间的布局切换
+        let _resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(_resizeTimer);
+            _resizeTimer = setTimeout(function() {
+                const nav = document.getElementById('outline-nav');
+                const divider = document.getElementById('split-divider');
+                if (window.innerWidth >= 1024) {
+                    // 桌面端：关闭移动端大纲浮层，分栏拖拽恢复垂直方向
+                    nav.classList.remove('mobile-visible');
+                    divider.style.cursor = 'col-resize';
+                } else {
+                    // 平板/手机：分栏拖拽改为水平方向
+                    divider.style.cursor = 'row-resize';
+                }
+            }, 150);
+        });
+
+        console.log('🎉 MD转换器 Demo 演示页已就绪');
+        console.log('💡 提示：点击上传区或直接按「开始转换」即可体验完整流程');
+        console.log('🌐 所有交互均为本地模拟，无需后端服务');
+    }
+
+    // ── 启动 ────────────────────────────
+    document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
